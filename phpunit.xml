@@ -28,7 +28,11 @@
         <env name="DB_URL" value=""/>
         <env name="MAIL_MAILER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
-        <env name="SESSION_DRIVER" value="array"/>
+        <!-- 'database' et non 'array' : les paniers invités sont indexés par id
+             de session et doivent vraiment persister entre deux requêtes
+             séparées dans un test, comme la session d'un vrai navigateur
+             survit aux chargements de page. -->
+        <env name="SESSION_DRIVER" value="database"/>
         <env name="PULSE_ENABLED" value="false"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
         <env name="NIGHTWATCH_ENABLED" value="false"/>

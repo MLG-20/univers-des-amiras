@@ -10,7 +10,7 @@ class CategoryController extends Controller
 {
     public function show(Category $category): View
     {
-        // Same anti-enumeration rule as products: a disabled category 404s.
+        // Même règle anti-énumération que pour les produits : une catégorie désactivée renvoie 404.
         abort_unless($category->is_active, 404);
 
         $category->load(['children' => fn ($query) => $query->active()->orderBy('position')]);

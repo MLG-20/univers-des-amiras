@@ -44,8 +44,8 @@ return [
             'provider' => 'users',
         ],
 
-        // Deliberately separate from 'web': a client session can never
-        // authenticate against admin routes, whatever guessed/forged URL is tried.
+        // Volontairement séparé de 'web' : une session client ne peut jamais
+        // s'authentifier sur les routes admin, quelle que soit l'URL devinée/forgée.
         'admin' => [
             'driver' => 'session',
             'provider' => 'admins',

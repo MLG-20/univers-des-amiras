@@ -69,33 +69,65 @@
                     <p class="mt-6 text-amiras-ink/80 whitespace-pre-line">{{ $product->description }}</p>
                 @endif
 
-                @if ($variants->isNotEmpty())
-                    <div class="mt-8">
-                        <label for="variant" class="block text-xs uppercase tracking-wide text-amiras-taupe mb-2">
-                            Choisir une variante
-                        </label>
-                        <select
-                            id="variant"
-                            name="variant_id"
-                            required
-                            class="w-full rounded-md border border-amiras-ink/20 focus:border-amiras-gold focus:ring-amiras-gold text-sm"
-                        >
-                            <option value="">— Sélectionner —</option>
-                            @foreach ($variants as $variant)
-                                @php
-                                    $label = collect($variant->attributes ?? [])
-                                        ->map(fn ($value, $key) => ucfirst($key).': '.$value)
-                                        ->implode(', ');
-                                    $price = $variant->price_override ?? $product->price;
-                                @endphp
-                                <option value="{{ $variant->id }}" @disabled($variant->stock <= 0)>
-                                    {{ $label ?: $variant->sku }} — {{ number_format($price, 0, ',', ' ') }} FCFA
-                                    @if ($variant->stock <= 0) (rupture) @endif
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
+                @if ($errors->has('variant_id') || $errors->has('quantity'))
+                    <p class="mt-4 text-sm text-amiras-bordeaux">
+                        {{ $errors->first('variant_id') ?: $errors->first('quantity') }}
+                    </p>
                 @endif
+
+                <form method="POST" action="{{ route('shop.cart.store') }}" class="mt-8">
+                    @csrf
+                    <input type="hidden" name="product_id" value="{{ $product->id }}">
+
+                    @if ($variants->isNotEmpty())
+                        <div>
+                            <label for="variant" class="block text-xs uppercase tracking-wide text-amiras-taupe mb-2">
+                                Choisir une variante
+                            </label>
+                            <select
+                                id="variant"
+                                name="variant_id"
+                                required
+                                class="w-full rounded-md border border-amiras-ink/20 focus:border-amiras-gold focus:ring-amiras-gold text-sm"
+                            >
+                                <option value="">— Sélectionner —</option>
+                                @foreach ($variants as $variant)
+                                    @php
+                                        $label = collect($variant->attributes ?? [])
+                                            ->map(fn ($value, $key) => ucfirst($key).': '.$value)
+                                            ->implode(', ');
+                                        $price = $variant->price_override ?? $product->price;
+                                    @endphp
+                                    <option value="{{ $variant->id }}" @disabled($variant->stock <= 0)>
+                                        {{ $label ?: $variant->sku }} — {{ number_format($price, 0, ',', ' ') }} FCFA
+                                        @if ($variant->stock <= 0) (rupture) @endif
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    @endif
+
+                    <div class="mt-4 flex items-center gap-4">
+                        <label for="quantity" class="text-xs uppercase tracking-wide text-amiras-taupe">Quantité</label>
+                        <input
+                            type="number"
+                            id="quantity"
+                            name="quantity"
+                            value="1"
+                            min="1"
+                            max="50"
+                            class="w-20 rounded-md border border-amiras-ink/20 focus:border-amiras-gold focus:ring-amiras-gold text-sm"
+                        >
+                    </div>
+
+                    <button
+                        type="submit"
+                        @disabled(! $product->isInStock())
+                        class="mt-6 w-full sm:w-auto px-8 py-3 border border-amiras-gold text-amiras-ink text-sm uppercase tracking-wide hover:bg-amiras-gold hover:text-white transition disabled:opacity-40 disabled:pointer-events-none"
+                    >
+                        Ajouter au panier
+                    </button>
+                </form>
             </div>
         </div>
     </div>

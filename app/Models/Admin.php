@@ -20,9 +20,9 @@ class Admin extends Authenticatable implements FilamentUser, MustVerifyEmail
 
     protected $guard_name = 'admin';
 
-    // Called by Filament on every login attempt and on each authenticated
-    // request; disabling an admin (is_active=false) locks them out immediately
-    // without needing to delete the account or revoke a session manually.
+    // Appelée par Filament à chaque tentative de connexion et à chaque requête
+    // authentifiée ; désactiver un admin (is_active=false) le bloque
+    // immédiatement sans avoir à supprimer le compte ou révoquer sa session.
     public function canAccessPanel(Panel $panel): bool
     {
         return $this->is_active && $this->hasVerifiedEmail();

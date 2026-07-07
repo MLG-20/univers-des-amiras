@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Catalogue\Category;
+use App\Services\CartService;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -21,13 +22,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Every public shop page shares the same root-category nav; a composer
-        // avoids passing $navCategories from every Shop\* controller manually.
+        // Toutes les pages boutique partagent la même nav de catégories racines ;
+        // ce composer évite de passer $navCategories manuellement depuis chaque
+        // contrôleur Shop\*.
         View::composer('layouts.shop', function ($view): void {
             $view->with(
                 'navCategories',
                 Category::query()->active()->whereNull('parent_id')->orderBy('position')->get()
             );
+            $view->with('cartItemCount', app(CartService::class)->currentItemCount(request()));
         });
     }
 }

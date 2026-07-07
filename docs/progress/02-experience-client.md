@@ -3,7 +3,7 @@
 **Statut : en cours.** Découpée en sous-étapes validées une par une avec Ahmed (voir [feedback_workflow] côté suivi de projet) :
 
 1. ✅ **Catalogue public** (listing, catégories, fiche produit) — fait
-2. ⏳ Panier (session invité + compte, fusion, isolation) — à venir
+2. ✅ **Panier** (session invité + compte, fusion, isolation) — fait
 3. ⏳ Comptes clients (adresses, historique commandes, infos perso) — à venir
 4. ⏳ Mobile + performance (images optimisées, cache, lazy loading) — à venir
 5. ⏳ Tests + revue sécurité de fin de phase (XSS, CSRF, IDOR adresses/historique) — à venir
@@ -40,4 +40,33 @@ Pas encore implémentés (prochaine sous-étape probable après le panier, ou à
 ```bash
 php artisan test --filter=CatalogueTest
 php artisan serve   # puis / , /catalogue, /categories/{slug}, /produits/{slug}
+```
+
+---
+
+## Sous-étape 2 — Panier (fait)
+
+### Ce qui a été construit
+- Domaine `App\Models\Cart\{Cart,CartItem}` + migrations `carts`/`cart_items`. `carts.user_id` et `carts.session_id` sont uniques et mutuellement exclusifs (un panier = soit un invité via session, soit un compte).
+- `App\Services\CartService` centralise toute la logique métier (résolution du panier courant, ajout, changement de quantité, suppression, fusion invité→compte) — le contrôleur ne fait qu'orchestrer et traduire les erreurs en messages.
+- Prix **jamais stocké** sur `cart_items` : `CartItem::unitPrice()`/`lineTotal()` recalculent à partir du produit/variante à chaque affichage, donc le panier reflète toujours le prix catalogue actuel (pas un instantané figé).
+- Vérification de stock **à l'ajout et à la mise à jour de quantité** (pas seulement à l'affichage), variante obligatoire si le produit en a, produit/variante inactifs rejetés.
+- Ajouter deux fois le même produit/variante incrémente la ligne existante au lieu de dupliquer.
+
+### Sécurité (section 3 du cahier des charges)
+- **Isolation stricte des paniers invités** : le panier courant est résolu uniquement via `$request->session()->getId()` côté serveur — jamais un id de panier/session accepté depuis la requête (query, champ caché). Deux sessions différentes ne peuvent physiquement pas se voir.
+- **Anti-IDOR sur les lignes de panier** : `CartController::authorizeItemOwnership()` vérifie que la ligne appartient bien au panier du visiteur courant avant toute modification/suppression — sinon 403. Sans ce contrôle, l'id auto-incrémenté d'une ligne aurait pu être deviné et modifié par un autre visiteur.
+- **Fusion panier invité → compte** : à la connexion (`AuthenticatedSessionController`) et à l'inscription (`RegisteredUserController`), l'id de session est capturé **avant** `authenticate()`/`Auth::login()` (qui régénèrent l'id en interne), puis passé explicitement à `CartService::mergeGuestCartIntoUser()`. La fusion ne fait donc jamais confiance à un identifiant fourni par le client — seulement à celui de la requête HTTP en cours.
+- **CSRF** : aucune protection ajoutée à la main — le groupe de middleware `web` (par défaut, non modifié) protège déjà toutes les routes panier. Vérifié manuellement (`curl` sans jeton → `419`) plutôt que via un test automatisé, car l'environnement de test Laravel contourne volontairement la vérification CSRF (`runningUnitTests()`), comme pour les tests d'auth Breeze livrés par défaut.
+
+### Piège rencontré : tester la persistance de session
+Le client de test Laravel ne renvoie pas automatiquement les cookies d'une requête à l'autre (contrairement à un navigateur), donc deux appels `$this->post()`/`$this->get()` séparés utilisent par défaut deux sessions différentes. Après une fausse piste (rejouer le `Set-Cookie` capturé, ou le rechiffrer à la main — les deux échouent silencieusement), la bonne méthode est de passer l'id de session **en clair** à `withCookie()` : le client de test le chiffre lui-même avant l'envoi (`MakesHttpRequests::prepareCookiesForRequest()`). Voir `tests/Feature/Shop/CartTest::asGuestSession()`.
+
+### Tests
+`tests/Feature/Shop/CartTest.php` — 13 tests : variante obligatoire, produit sans variante, persistance panier invité entre requêtes, fusion des lignes dupliquées, refus si stock insuffisant, isolation entre deux sessions invité indépendantes, anti-IDOR sur une ligne d'un autre visiteur, fusion à la connexion, plafonnement de la quantité fusionnée au stock disponible, suppression, quantité à 0 = suppression, total recalculé sur le prix courant, produit inactif rejeté.
+
+### Comment vérifier
+```bash
+php artisan test --filter=CartTest
+php artisan serve   # ajouter un produit au panier depuis /produits/{slug}, voir /panier
 ```

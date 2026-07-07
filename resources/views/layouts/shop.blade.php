@@ -38,6 +38,15 @@
                             <a href="{{ route('login') }}" class="text-amiras-ink/80 hover:text-amiras-ink">Connexion</a>
                         @endauth
 
+                        <a href="{{ route('shop.cart') }}" class="text-amiras-ink/80 hover:text-amiras-ink flex items-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 1.994-4.694 2.598-7.172.106-.43-.27-.828-.712-.828H5.106M7.5 14.25L5.106 5.272M7.5 14.25L5.25 18.75m9-14.25L21.75 5.25" />
+                            </svg>
+                            @if ($cartItemCount > 0)
+                                <span>{{ $cartItemCount }}</span>
+                            @endif
+                        </a>
+
                         <button
                             type="button"
                             class="md:hidden p-2 -mr-2"

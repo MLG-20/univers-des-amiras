@@ -23,8 +23,9 @@ class ProductController extends Controller
 
     public function show(Product $product): View
     {
-        // Soft-deleted products are already excluded by the default scope;
-        // inactive ones must 404 too, so disabled items can't be enumerated by slug.
+        // Les produits soft-supprimés sont déjà exclus par le scope par défaut ;
+        // les produits inactifs doivent aussi renvoyer 404, pour empêcher
+        // l'énumération d'articles désactivés via leur slug.
         abort_unless($product->is_active, 404);
 
         $product->load(['category', 'images', 'variants' => fn ($query) => $query->active()]);

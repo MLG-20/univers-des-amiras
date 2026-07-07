@@ -83,9 +83,9 @@ class ProductResource extends Resource
                     ->relationship('images')
                     ->label('Images')
                     ->schema([
-                        // ->image() validates the real MIME type server-side (not just
-                        // the extension), and Filament renames the file on storage —
-                        // this is what rejects a .php file disguised as a .jpg.
+                        // ->image() valide le vrai type MIME côté serveur (pas juste
+                        // l'extension), et Filament renomme le fichier au stockage —
+                        // c'est ce qui rejette un .php déguisé en .jpg.
                         FileUpload::make('path')
                             ->label('Image')
                             ->image()
@@ -143,8 +143,9 @@ class ProductResource extends Resource
                 DeleteAction::make(),
                 RestoreAction::make(),
             ])
-            // Show soft-deleted products too (with a Restore action) so admins can
-            // recover a deleted product instead of only ever seeing it disappear.
+            // Affiche aussi les produits soft-supprimés (avec une action Restaurer)
+            // pour que l'admin puisse récupérer un produit plutôt que de le voir
+            // simplement disparaître.
             ->modifyQueryUsing(fn (Builder $query) => $query->withoutGlobalScopes([SoftDeletingScope::class]));
     }
 

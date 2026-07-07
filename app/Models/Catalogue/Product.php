@@ -53,8 +53,9 @@ class Product extends Model
         return $query->where('is_active', true);
     }
 
-    // Both helpers below read from already-loaded relations (never query),
-    // so callers must eager-load images/variants first to avoid N+1 on listings.
+    // Les deux méthodes ci-dessous lisent des relations déjà chargées (jamais
+    // de requête) — l'appelant doit donc précharger images/variantes en amont
+    // pour éviter le problème N+1 sur les listings.
     public function primaryImage(): ?ProductImage
     {
         return $this->images->firstWhere('is_primary', true) ?? $this->images->first();
@@ -62,8 +63,8 @@ class Product extends Model
 
     public function isInStock(): bool
     {
-        // No variants at all means the product isn't stock-tracked (schema only
-        // records stock per variant) — treat it as always available.
+        // Aucune variante = produit sans suivi de stock (le schéma n'enregistre
+        // le stock qu'au niveau variante) — considéré comme toujours disponible.
         if ($this->variants->isEmpty()) {
             return true;
         }
