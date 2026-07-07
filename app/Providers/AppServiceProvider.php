@@ -21,6 +21,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Every public shop page shares the same root-category nav; a composer
+        // avoids passing $navCategories from every Shop\* controller manually.
         View::composer('layouts.shop', function ($view): void {
             $view->with(
                 'navCategories',

@@ -44,6 +44,8 @@ return [
             'provider' => 'users',
         ],
 
+        // Deliberately separate from 'web': a client session can never
+        // authenticate against admin routes, whatever guessed/forged URL is tried.
         'admin' => [
             'driver' => 'session',
             'provider' => 'admins',

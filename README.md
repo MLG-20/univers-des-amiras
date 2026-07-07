@@ -1,58 +1,58 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# L'Univers des Amiras
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Boutique e-commerce de mode féminine (voiles/hijabs, parfums, sacs à main, collants, vêtements), mono-vendeur, mobile-first, ciblant le Sénégal.
 
-## About Laravel
+Le cahier des charges complet et le détail de chaque phase se trouvent dans [docs/](docs/univers-des-amiras-cahier-des-charges.md). L'avancement réel (ce qui est fait, les décisions prises et pourquoi) est documenté phase par phase dans [docs/progress/](docs/progress/) — c'est le premier endroit à consulter pour reprendre le contexte du projet.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Stack technique
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Backend** : Laravel 12 (PHP 8.4), architecture modulaire par domaine métier (`App\Models\Catalogue`, etc.)
+- **Base de données** : MySQL 8
+- **Site public (client)** : Blade + Alpine.js
+- **Back-office admin** : [Filament](https://filamentphp.com/) (panel `/admin`), guard d'authentification `admin` totalement séparé du guard `web` des clients (table `admins` dédiée)
+- **API** : Laravel Sanctum, endpoints versionnés sous `/api/v1`, pensée pour une future app mobile
+- **Rôles/permissions** : spatie/laravel-permission
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Démarrage local
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+composer install
+npm install && npm run build   # ou npm run dev en développement
+cp .env.example .env
+php artisan key:generate
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Configurer dans `.env` : `DB_*` (MySQL), `ADMIN_SEED_EMAIL` / `ADMIN_SEED_PASSWORD` (compte admin créé par le seeder).
 
-## Contributing
+```bash
+php artisan migrate --seed
+php artisan storage:link       # nécessaire pour les images produit
+php artisan serve
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- Site public : `http://localhost:8000`
+- Back-office admin : `http://localhost:8000/admin` (identifiants = `ADMIN_SEED_EMAIL` / `ADMIN_SEED_PASSWORD`)
 
-## Code of Conduct
+## Tests
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+php artisan test
+./vendor/bin/pint --test   # style de code
+```
 
-## Security Vulnerabilities
+Les tests tournent sur une base MySQL dédiée (`DB_DATABASE` défini dans `phpunit.xml` en surchargeant uniquement `DB_CONNECTION`/`DB_DATABASE` — les identifiants viennent de `.env`, jamais commités).
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Intégration continue
 
-## License
+GitHub Actions (`.github/workflows/ci.yml`) exécute à chaque push/PR sur `main` : style de code (Pint), migrations sur MySQL, suite de tests complète.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Structure du projet
+
+- `app/Models/Catalogue/` — modèles du domaine catalogue (Catégorie, Produit, Variante, Image)
+- `app/Http/Controllers/Shop/` — contrôleurs du site public (catalogue navigable)
+- `app/Http/Controllers/Api/V1/` — API publique (lecture catalogue) et authentification par token
+- `app/Filament/Resources/` — ressources du back-office admin
+- `routes/web.php`, `routes/shop.php`, `routes/auth.php` — routes du site public
+- `routes/api.php` — routes API v1
+- `docs/files/0X-*.md` — cahier des charges détaillé par phase
+- `docs/progress/0X-*.md` — journal d'avancement réel par phase (mis à jour au fil du développement)
