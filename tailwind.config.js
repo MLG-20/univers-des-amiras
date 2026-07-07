@@ -12,7 +12,18 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ['"Work Sans"', ...defaultTheme.fontFamily.sans],
+                display: ['"Playfair Display"', ...defaultTheme.fontFamily.serif],
+            },
+            colors: {
+                amiras: {
+                    cream: '#FDFCFA',
+                    ivory: '#F3EDE1',
+                    ink: '#1A1815',
+                    gold: '#B8923F',
+                    bordeaux: '#5C1A28',
+                    taupe: '#8A8074',
+                },
             },
         },
     },
