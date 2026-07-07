@@ -52,4 +52,18 @@ class Product extends Model
     {
         return $query->where('is_active', true);
     }
+
+    public function primaryImage(): ?ProductImage
+    {
+        return $this->images->firstWhere('is_primary', true) ?? $this->images->first();
+    }
+
+    public function isInStock(): bool
+    {
+        if ($this->variants->isEmpty()) {
+            return true;
+        }
+
+        return $this->variants->contains(fn (ProductVariant $variant) => $variant->is_active && $variant->stock > 0);
+    }
 }
