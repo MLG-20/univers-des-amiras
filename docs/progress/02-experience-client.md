@@ -70,3 +70,37 @@ Le client de test Laravel ne renvoie pas automatiquement les cookies d'une requ�
 php artisan test --filter=CartTest
 php artisan serve   # ajouter un produit au panier depuis /produits/{slug}, voir /panier
 ```
+
+---
+
+## Sous-étape 3 — Recherche et filtres du catalogue (fait)
+
+### Ce qui a été construit
+- `App\Http\Requests\Shop\FilterProductsRequest` valide et nettoie tous les paramètres de filtre avant qu'ils n'atteignent la base : `q` (texte, max 100 caractères), `category_id` (doit exister **et être une catégorie active**), `min_price`/`max_price` (numériques, `max_price` ne peut être inférieur à `min_price` **que si `min_price` est réellement fourni** — piège rencontré, voir plus bas), `in_stock` (booléen).
+- `Product::scopeFilter()` (dans `app/Models/Catalogue/Product.php`) assemble la requête à partir de ces valeurs déjà validées — réutilisé à l'identique par `ProductController::index` (catalogue global) et `CategoryController::show` (page catégorie), pour ne pas dupliquer la logique de filtre à deux endroits.
+- Recherche texte : correspond au nom du produit **ou** au nom de sa catégorie (`orWhereHas('category', ...)`).
+- Filtre stock : un produit sans variante est considéré disponible (pas de suivi de stock à ce niveau, cohérent avec `Product::isInStock()`) ; un produit avec variantes doit avoir au moins une variante active en stock.
+- Interaction réactive **sans rechargement de page** (choix déjà acté en sous-étape 1) : le composant Alpine `productFilters` (`resources/js/shop-filters.js`, enregistré dans `app.js`) fait un `fetch()` vers la même route catalogue/catégorie avec un en-tête `X-Requested-With: XMLHttpRequest`. Le contrôleur détecte cet en-tête (`$request->ajax()`) et renvoie uniquement le fragment `shop.partials.product-grid` (grille + pagination), pas la page complète — aucune logique d'affichage dupliquée en JS, tout le rendu reste côté serveur.
+- Les liens de pagination (générés par `$products->links()`) sont interceptés en JS après chaque rendu du fragment, pour rester dans le même flux fetch/remplacement plutôt que de recharger la page au changement de page.
+- L'URL du navigateur est mise à jour via `history.pushState` à chaque filtre appliqué (recherche partageable/navigable au bouton retour), et un écouteur `popstate` réapplique le fragment correspondant.
+- Nouveau composant Blade `x-shop.filter-bar` (recherche, catégorie — uniquement sur le catalogue global, la page catégorie est déjà scopée —, prix min/max, case "en stock"), inclus dans `shop/index.blade.php` et `shop/category.blade.php`.
+
+### Sécurité
+- **Anti-injection sur les paramètres de filtre** (exigence explicite section 3 du cahier des charges) : tout passe par `FilterProductsRequest` — un `category_id` invalide ou inactif est silencieusement ignoré (pas d'erreur qui révèle l'existence d'une catégorie désactivée), un prix non numérique ou une recherche trop longue est rejetée.
+- **Échappement des jokers LIKE** : le terme de recherche est échappé (`addcslashes($q, '%_\\')`) avant d'être inséré dans un `LIKE %...%` — sans ça, un utilisateur tapant `%` ou `_` pourrait élargir la correspondance au-delà de l'intention (pas une faille d'injection SQL grâce aux requêtes préparées, mais un comportement de recherche incorrect/exploitable pour de l'énumération).
+- **La page catégorie ne peut pas être détournée via `category_id`** : `CategoryController::show` force `category_id` à `null` dans les filtres appliqués, quel que soit ce qui est passé en paramètre d'URL — on reste toujours dans le périmètre de la catégorie de la route, jamais dans une autre.
+
+### Piège rencontré : la règle de validation `gte:min_price`
+La règle Laravel `gte:min_price` sur `max_price` échoue **même quand `min_price` est absent de la requête** (elle compare `max_price` à un champ vide plutôt que d'ignorer la comparaison), ce qui rejetait à tort tout filtre "prix max seul". Corrigé en n'ajoutant la règle `gte:min_price` que si `min_price` est effectivement présent (`$this->filled('min_price')`).
+
+### Tests
+`tests/Feature/Shop/CatalogueFilterTest.php` — 11 tests : recherche par nom de produit, recherche par nom de catégorie, jokers LIKE traités comme texte littéral, filtre catégorie, catégorie inactive ignorée silencieusement, plage de prix, plage de prix invalide rejetée (422), filtre stock disponible, filtres combinés sur la page catégorie, `category_id` de l'URL sans effet sur la page catégorie, requête AJAX ne renvoyant que le fragment grille.
+
+### Comment vérifier
+```bash
+php artisan test --filter=CatalogueFilterTest
+php artisan serve   # /catalogue puis utiliser la barre de recherche/filtres, vérifier que l'URL se met à jour sans rechargement
+```
+
+### Non vérifié dans cette session
+Le comportement du composant Alpine (debounce, remplacement du fragment, interception des liens de pagination, `history.pushState`) a été vérifié via des requêtes `curl` (rendu serveur correct, fragment AJAX correct, JS bien présent dans le bundle compilé) mais **pas dans un vrai navigateur** — aucun outil de pilotage navigateur (Playwright/chromium-cli) n'était disponible dans cet environnement. À tester manuellement avant de cocher ce point dans la checklist de fin de phase.

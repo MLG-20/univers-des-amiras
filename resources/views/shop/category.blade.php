@@ -19,18 +19,8 @@
             </div>
         @endif
 
-        @if ($products->isEmpty())
-            <p class="text-amiras-taupe">Aucun produit dans cette catégorie pour le moment.</p>
-        @else
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
-                @foreach ($products as $product)
-                    <x-shop.product-card :product="$product" />
-                @endforeach
-            </div>
-
-            <div class="mt-10">
-                {{ $products->links() }}
-            </div>
-        @endif
+        <x-shop.filter-bar :action="route('shop.category', $category)">
+            @include('shop.partials.product-grid', ['products' => $products])
+        </x-shop.filter-bar>
     </div>
 </x-shop-layout>

@@ -3,21 +3,33 @@
 namespace App\Http\Controllers\Shop;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Shop\FilterProductsRequest;
+use App\Models\Catalogue\Category;
 use App\Models\Catalogue\Product;
 use Illuminate\View\View;
 
 class ProductController extends Controller
 {
-    public function index(): View
+    public function index(FilterProductsRequest $request): View
     {
         $products = Product::query()
             ->active()
+            ->filter($request->filters())
             ->with(['category', 'images', 'variants' => fn ($query) => $query->active()])
             ->latest()
-            ->paginate(12);
+            ->paginate(12)
+            ->withQueryString();
+
+        // Une requête envoyée par le composant Alpine de recherche/filtres (voir
+        // resources/js/shop-filters.js) ne reçoit que la grille de produits, pas
+        // toute la page — évite un rechargement complet à chaque filtre.
+        if ($request->ajax()) {
+            return view('shop.partials.product-grid', ['products' => $products]);
+        }
 
         return view('shop.index', [
             'products' => $products,
+            'categories' => Category::query()->active()->orderBy('position')->get(),
         ]);
     }
 
