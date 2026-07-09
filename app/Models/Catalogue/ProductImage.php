@@ -2,6 +2,7 @@
 
 namespace App\Models\Catalogue;
 
+use App\Services\ImageVariantGenerator;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -28,5 +29,19 @@ class ProductImage extends Model
     public function url(): string
     {
         return Storage::disk('public')->url($this->path);
+    }
+
+    /**
+     * URL d'une variante redimensionnée (voir ImageVariantGenerator::SIZES).
+     * Retombe sur l'image d'origine si la variante n'a pas encore été
+     * générée (image uploadée avant l'ajout de cette fonctionnalité, ou
+     * génération ayant échoué) — jamais d'image cassée côté client.
+     */
+    public function sizedUrl(string $size): string
+    {
+        $disk = Storage::disk('public');
+        $sizedPath = app(ImageVariantGenerator::class)->sizedPath($this->path, $size);
+
+        return $disk->exists($sizedPath) ? $disk->url($sizedPath) : $this->url();
     }
 }

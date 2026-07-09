@@ -4,7 +4,20 @@
 @endphp
 
 <x-shop-layout :title="$product->name.' — '.config('app.name')">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" x-data="{ activeImage: 0 }">
+    <div
+        class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
+        x-data="{
+            activeImage: 0,
+            touchStartX: 0,
+            onSwipe(event, count) {
+                const deltaX = event.changedTouches[0].screenX - this.touchStartX;
+                if (Math.abs(deltaX) < 40 || count <= 1) return;
+                this.activeImage = deltaX < 0
+                    ? (this.activeImage + 1) % count
+                    : (this.activeImage - 1 + count) % count;
+            },
+        }"
+    >
         <nav class="text-sm text-amiras-taupe mb-6">
             <a href="{{ route('shop.category', $product->category) }}" class="hover:text-amiras-ink">
                 {{ $product->category->name }}
@@ -15,20 +28,26 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
             <div>
-                <div class="aspect-square w-full overflow-hidden rounded-md bg-amiras-ivory">
+                <div
+                    class="relative aspect-square w-full overflow-hidden rounded-md bg-amiras-ivory touch-pan-y"
+                    x-on:touchstart="touchStartX = $event.changedTouches[0].screenX"
+                    x-on:touchend="onSwipe($event, {{ $images->count() }})"
+                >
                     @forelse ($images as $index => $image)
                         <img
                             x-show="activeImage === {{ $index }}"
                             x-cloak
                             x-transition.opacity.duration.300ms
-                            src="{{ Illuminate\Support\Facades\Storage::disk('public')->url($image->path) }}"
+                            src="{{ $image->sizedUrl('large') }}"
+                            srcset="{{ $image->sizedUrl('medium') }} 800w, {{ $image->sizedUrl('large') }} 1400w"
+                            sizes="(min-width: 1024px) 50vw, 100vw"
                             alt="{{ $product->name }}"
-                            class="h-full w-full object-cover object-center"
+                            loading="{{ $index === 0 ? 'eager' : 'lazy' }}"
+                            class="h-full w-full object-cover object-center select-none"
+                            draggable="false"
                         >
                     @empty
-                        <div class="h-full w-full flex items-center justify-center text-amiras-taupe text-sm">
-                            Pas d'image
-                        </div>
+                        <x-shop.image-placeholder :category="$product->category" />
                     @endforelse
                 </div>
 
@@ -42,7 +61,7 @@
                                 :class="activeImage === {{ $index }} ? 'border-amiras-gold' : 'border-amiras-ink/10'"
                             >
                                 <img
-                                    src="{{ Illuminate\Support\Facades\Storage::disk('public')->url($image->path) }}"
+                                    src="{{ $image->sizedUrl('thumb') }}"
                                     alt="{{ $product->name }}"
                                     loading="lazy"
                                     class="h-full w-full object-cover object-center"

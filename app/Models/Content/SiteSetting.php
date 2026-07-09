@@ -1,0 +1,53 @@
+<?php
+
+namespace App\Models\Content;
+
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Model;
+
+#[Fillable([
+    'trust_items', 'about_story', 'about_quote', 'about_values',
+    'contact_whatsapp', 'contact_email', 'contact_address', 'contact_hours',
+    'footer_tagline', 'social_instagram', 'social_facebook', 'social_tiktok',
+])]
+class SiteSetting extends Model
+{
+    protected function casts(): array
+    {
+        return [
+            'trust_items' => 'array',
+            'about_values' => 'array',
+        ];
+    }
+
+    /**
+     * Contenu éditable en singleton : une seule ligne existe toujours (id=1),
+     * créée avec des valeurs par défaut au premier accès pour que le site
+     * n'affiche jamais une section vide avant le premier réglage en admin.
+     */
+    public static function current(): self
+    {
+        return static::query()->firstOrCreate([], [
+            'trust_items' => [
+                'Paiement à la livraison',
+                'Livraison organisée avec soin',
+                'Une question ? Contactez-nous directement',
+            ],
+            'about_story' => "L'Univers des Amiras est né d'une conviction simple : la mode voilée mérite des pièces choisies avec la même exigence que n'importe quel univers de mode. Voiles, hijabs, parfums et accessoires sont sélectionnés un à un, pour leur qualité autant que pour l'élégance qu'ils apportent au quotidien.\n\nChaque pièce est pensée pour accompagner une femme moderne, fière de son identité, qui ne veut choisir ni entre pudeur et style, ni entre tradition et modernité.",
+            'about_quote' => "L'élégance ne se choisit pas, elle se porte avec soi.",
+            'about_values' => [
+                ['title' => 'Qualité', 'text' => 'Des matières et finitions choisies avec exigence.'],
+                ['title' => 'Authenticité', 'text' => 'Une identité assumée, sans compromis.'],
+                ['title' => 'Proximité', 'text' => 'Une relation directe et à l\'écoute de chaque cliente.'],
+            ],
+            'contact_whatsapp' => '+221 XX XXX XX XX',
+            'contact_email' => 'contact@amiras.test',
+            'contact_address' => 'Dakar, Sénégal',
+            'contact_hours' => 'Nous répondons du lundi au samedi. Les zones et délais de livraison vous sont précisés directement lors de la commande.',
+            'footer_tagline' => "L'élégance voilée, pensée pour vous.",
+            'social_instagram' => null,
+            'social_facebook' => null,
+            'social_tiktok' => null,
+        ]);
+    }
+}

@@ -1,10 +1,10 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Shop\ProductController;
+use App\Http\Controllers\Shop\HomeController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [ProductController::class, 'index'])->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -17,4 +17,5 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/shop.php';
+require __DIR__.'/account.php';
 require __DIR__.'/auth.php';

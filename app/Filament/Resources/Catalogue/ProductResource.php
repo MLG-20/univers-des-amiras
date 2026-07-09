@@ -93,7 +93,7 @@ class ProductResource extends Resource
                             ->disk('public')
                             ->directory('products')
                             ->visibility('public')
-                            ->maxSize(4096)
+                            ->maxSize(15360)
                             ->required(),
                         Toggle::make('is_primary')->label('Principale'),
                         TextInput::make('position')->numeric()->default(0),

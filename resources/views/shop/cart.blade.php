@@ -29,10 +29,13 @@
                         <div class="w-20 h-20 flex-shrink-0 rounded-md overflow-hidden bg-amiras-ivory">
                             @if ($image = $item->product->primaryImage())
                                 <img
-                                    src="{{ Illuminate\Support\Facades\Storage::disk('public')->url($image->path) }}"
+                                    src="{{ $image->sizedUrl('thumb') }}"
                                     alt="{{ $item->product->name }}"
+                                    loading="lazy"
                                     class="h-full w-full object-cover object-center"
                                 >
+                            @else
+                                <x-shop.image-placeholder :category="$item->product->category" />
                             @endif
                         </div>
 
