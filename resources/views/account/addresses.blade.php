@@ -6,7 +6,7 @@
 
         <div class="grid gap-8 lg:grid-cols-2">
             <div>
-                <h2 class="text-lg font-medium text-amiras-ink mb-4">Adresses enregistrées</h2>
+                <h2 class="text-lg font-medium text-brand-ink mb-4">Adresses enregistrées</h2>
 
                 @if (session('status') === 'address-created')
                     <p class="text-sm text-green-700 mb-4">Adresse ajoutée.</p>
@@ -17,25 +17,25 @@
                 @endif
 
                 @forelse ($addresses as $address)
-                    <div class="p-5 mb-4 bg-white border {{ $address->is_default ? 'border-amiras-gold/40' : 'border-amiras-ink/10' }} rounded-2xl transition hover:shadow-md hover:border-amiras-gold/40" x-data="{ editing: false }">
+                    <div class="p-5 mb-4 bg-white border {{ $address->is_default ? 'border-brand-signature/40' : 'border-brand-ink/10' }} rounded-2xl transition hover:shadow-md hover:border-brand-signature/40" x-data="{ editing: false }">
                         <div x-show="!editing">
                             <div class="flex items-start justify-between gap-4">
                                 <div>
-                                    <p class="font-medium text-amiras-ink">
+                                    <p class="font-medium text-brand-ink">
                                         {{ $address->recipient_name }}
                                         @if ($address->is_default)
-                                            <span class="ml-2 text-xs uppercase tracking-wide text-amiras-gold border border-amiras-gold rounded-md px-2 py-0.5">Par défaut</span>
+                                            <span class="ml-2 text-xs uppercase tracking-wide text-brand-signature border border-brand-signature rounded-md px-2 py-0.5">Par défaut</span>
                                         @endif
                                     </p>
-                                    <p class="text-sm text-amiras-ink/80 mt-1">{{ $address->phone }}</p>
-                                    <p class="text-sm text-amiras-ink/80">{{ $address->address_line }}, {{ $address->city }}</p>
+                                    <p class="text-sm text-brand-ink/80 mt-1">{{ $address->phone }}</p>
+                                    <p class="text-sm text-brand-ink/80">{{ $address->address_line }}, {{ $address->city }}</p>
                                     @if ($address->landmark)
-                                        <p class="text-sm text-amiras-taupe">Repère : {{ $address->landmark }}</p>
+                                        <p class="text-sm text-brand-muted">Repère : {{ $address->landmark }}</p>
                                     @endif
                                 </div>
 
                                 <div class="flex flex-col gap-2 items-end shrink-0">
-                                    <button type="button" x-on:click="editing = true" class="text-sm underline text-amiras-taupe hover:text-amiras-ink">
+                                    <button type="button" x-on:click="editing = true" class="text-sm underline text-brand-muted hover:text-brand-ink">
                                         Modifier
                                     </button>
 
@@ -55,12 +55,12 @@
 
                             <div class="flex items-center gap-3">
                                 <x-primary-button>Enregistrer</x-primary-button>
-                                <button type="button" x-on:click="editing = false" class="text-sm text-amiras-taupe hover:text-amiras-ink">Annuler</button>
+                                <button type="button" x-on:click="editing = false" class="text-sm text-brand-muted hover:text-brand-ink">Annuler</button>
                             </div>
                         </form>
                     </div>
                 @empty
-                    <div class="rounded-2xl border border-dashed border-amiras-ink/20 p-8 text-center text-sm text-amiras-taupe">
+                    <div class="rounded-2xl border border-dashed border-brand-ink/20 p-8 text-center text-sm text-brand-muted">
                         Vous n'avez pas encore enregistré d'adresse.<br>
                         Ajoutez-en une pour accélérer vos prochaines commandes.
                     </div>
@@ -68,9 +68,9 @@
             </div>
 
             <div>
-                <h2 class="text-lg font-medium text-amiras-ink mb-4">Ajouter une adresse</h2>
+                <h2 class="text-lg font-medium text-brand-ink mb-4">Ajouter une adresse</h2>
 
-                <form method="post" action="{{ route('account.addresses.store') }}" class="p-6 bg-white border border-amiras-ink/10 rounded-2xl space-y-4">
+                <form method="post" action="{{ route('account.addresses.store') }}" class="p-6 bg-white border border-brand-ink/10 rounded-2xl space-y-4">
                     @csrf
                     @include('account.partials.address-fields')
 

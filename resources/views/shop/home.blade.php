@@ -17,27 +17,27 @@
     @endphp
 
     <section
-        class="relative w-full min-h-[560px] text-amiras-cream overflow-hidden"
+        class="relative w-full min-h-[560px] text-brand-surface overflow-hidden"
         x-data="{ active: 0, count: {{ max($slides->count(), 1) }} }"
         x-init="count > 1 && setInterval(() => active = (active + 1) % count, 6000)"
     >
         @if ($slides->isEmpty())
-            <div class="absolute inset-0 bg-amiras-ink">
-                <div class="absolute inset-0 opacity-25 bg-[radial-gradient(circle_at_15%_15%,rgba(184,146,63,0.6),transparent_60%)]"></div>
-                <div class="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_85%_85%,rgba(184,146,63,0.5),transparent_55%)]"></div>
+            <div class="absolute inset-0 bg-brand-ink">
+                <div class="absolute inset-0 opacity-25 bg-[radial-gradient(circle_at_15%_15%,rgba(74,24,51,0.6),transparent_60%)]"></div>
+                <div class="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_85%_85%,rgba(74,24,51,0.5),transparent_55%)]"></div>
 
                 <div class="relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-center items-start gap-6">
-                    <span class="text-xs uppercase tracking-[0.3em] text-amiras-gold">Depuis Dakar</span>
+                    <span class="text-xs uppercase tracking-[0.3em] text-brand-sage">Depuis Dakar</span>
                     <h1 class="font-display text-4xl sm:text-6xl leading-[1.1] max-w-2xl">{{ $defaultSlide['title'] }}</h1>
-                    <p class="text-amiras-cream/70 max-w-md text-base sm:text-lg">{{ $defaultSlide['subtitle'] }}</p>
+                    <p class="text-brand-surface/70 max-w-md text-base sm:text-lg">{{ $defaultSlide['subtitle'] }}</p>
 
                     <div class="flex flex-wrap gap-4 mt-2">
-                        <a href="{{ $defaultSlide['cta_url'] }}" class="inline-block border border-amiras-gold px-8 py-3 text-sm uppercase tracking-wide hover:bg-amiras-gold hover:text-amiras-ink transition">
+                        <a href="{{ $defaultSlide['cta_url'] }}" class="inline-block border border-brand-signature px-8 py-3 text-sm uppercase tracking-wide hover:bg-brand-accent hover:text-brand-surface transition">
                             {{ $defaultSlide['cta_label'] }}
                         </a>
 
                         @if ($collections->isNotEmpty())
-                            <a href="{{ route('shop.category', $collections->first()->slug) }}" class="inline-block border border-amiras-cream/30 px-8 py-3 text-sm uppercase tracking-wide hover:border-amiras-cream transition">
+                            <a href="{{ route('shop.category', $collections->first()->slug) }}" class="inline-block border border-brand-surface/30 px-8 py-3 text-sm uppercase tracking-wide hover:border-brand-surface transition">
                                 {{ $collections->first()->name }}
                             </a>
                         @endif
@@ -50,27 +50,27 @@
                     x-show="active === {{ $index }}"
                     x-cloak
                     x-transition.opacity.duration.500ms
-                    class="absolute inset-0 bg-amiras-ink bg-cover"
+                    class="absolute inset-0 bg-brand-ink bg-cover"
                     @if ($slide->image_path) style="background-image: url('{{ $slide->sizedUrl('large') }}'); background-position: {{ $slide->cssBackgroundPosition() }};" @endif
                 >
-                    <div class="absolute inset-0 {{ $slide->image_path ? 'bg-amiras-ink/50' : '' }}"></div>
+                    <div class="absolute inset-0 {{ $slide->image_path ? 'bg-brand-ink/50' : '' }}"></div>
                     @unless ($slide->image_path)
-                        <div class="absolute inset-0 opacity-25 bg-[radial-gradient(circle_at_15%_15%,rgba(184,146,63,0.6),transparent_60%)]"></div>
-                        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_85%_85%,rgba(184,146,63,0.5),transparent_55%)]"></div>
+                        <div class="absolute inset-0 opacity-25 bg-[radial-gradient(circle_at_15%_15%,rgba(74,24,51,0.6),transparent_60%)]"></div>
+                        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_85%_85%,rgba(74,24,51,0.5),transparent_55%)]"></div>
                     @endunless
 
                     <div class="relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-center items-start gap-6">
-                        <span class="text-xs uppercase tracking-[0.3em] text-amiras-gold">Depuis Dakar</span>
+                        <span class="text-xs uppercase tracking-[0.3em] text-brand-sage">Depuis Dakar</span>
                         <h1 class="font-display text-4xl sm:text-6xl leading-[1.1] max-w-2xl">{{ $slide->title }}</h1>
 
                         @if ($slide->subtitle)
-                            <p class="text-amiras-cream/70 max-w-md text-base sm:text-lg">{{ $slide->subtitle }}</p>
+                            <p class="text-brand-surface/70 max-w-md text-base sm:text-lg">{{ $slide->subtitle }}</p>
                         @endif
 
                         @if ($slide->cta_label)
                             <a
                                 href="{{ $slide->cta_url ?: route('shop.index') }}"
-                                class="inline-block border border-amiras-gold px-8 py-3 text-sm uppercase tracking-wide hover:bg-amiras-gold hover:text-amiras-ink transition mt-2"
+                                class="inline-block border border-brand-signature px-8 py-3 text-sm uppercase tracking-wide hover:bg-brand-accent hover:text-brand-surface transition mt-2"
                             >
                                 {{ $slide->cta_label }}
                             </a>
@@ -86,7 +86,7 @@
                             type="button"
                             @click="active = {{ $index }}"
                             class="h-1.5 rounded-full transition-all"
-                            :class="active === {{ $index }} ? 'w-6 bg-amiras-gold' : 'w-1.5 bg-amiras-cream/50'"
+                            :class="active === {{ $index }} ? 'w-6 bg-brand-accent' : 'w-1.5 bg-brand-surface/50'"
                             aria-label="Aller à la diapositive {{ $index + 1 }}"
                         ></button>
                     @endforeach
@@ -98,21 +98,21 @@
     {{-- Collections — bannières pleine largeur, une par catégorie racine --}}
     @if ($collections->isNotEmpty())
         <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-            <span class="text-xs uppercase tracking-[0.2em] text-amiras-gold">Nos univers</span>
-            <h2 class="font-display text-3xl text-amiras-ink mt-1 mb-8">Collections</h2>
+            <span class="text-xs uppercase tracking-[0.2em] text-brand-signature">Nos univers</span>
+            <h2 class="font-display text-3xl text-brand-ink mt-1 mb-8">Collections</h2>
 
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-6">
                 @foreach ($collections as $collection)
                     <a href="{{ route('shop.category', $collection->slug) }}" class="group block">
-                        <div class="aspect-[4/5] w-full overflow-hidden rounded-md border border-amiras-ink/10 group-hover:border-amiras-gold transition">
+                        <div class="aspect-[4/5] w-full overflow-hidden rounded-md border border-brand-ink/10 group-hover:border-brand-signature transition">
                             <x-shop.image-placeholder :category="$collection" :image="$collection->sizedUrl('medium')" />
                         </div>
 
                         <div class="mt-3 flex items-center justify-between gap-2">
-                            <span class="font-display text-lg sm:text-xl text-amiras-ink group-hover:text-amiras-gold transition">
+                            <span class="font-display text-lg sm:text-xl text-brand-ink group-hover:text-brand-signature transition">
                                 {{ $collection->name }}
                             </span>
-                            <span class="text-xs uppercase tracking-wide text-amiras-ink/60 whitespace-nowrap">
+                            <span class="text-xs uppercase tracking-wide text-brand-ink/60 whitespace-nowrap">
                                 Voir →
                             </span>
                         </div>
@@ -125,8 +125,8 @@
     {{-- Nouveautés — défilement horizontal --}}
     @if ($newProducts->isNotEmpty())
         <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-            <span class="text-xs uppercase tracking-[0.2em] text-amiras-gold">À découvrir</span>
-            <h2 class="font-display text-3xl text-amiras-ink mt-1 mb-8">Nouveautés</h2>
+            <span class="text-xs uppercase tracking-[0.2em] text-brand-signature">À découvrir</span>
+            <h2 class="font-display text-3xl text-brand-ink mt-1 mb-8">Nouveautés</h2>
 
             <div class="overflow-hidden">
                 <div class="flex gap-6 w-max marquee-track">
@@ -157,12 +157,12 @@
              `shown` bascule à true quand la section entre dans le viewport, ce
              qui déclenche l'apparition en cascade des cartes. --}}
         <section
-            class="relative border-y border-amiras-ink/10 bg-gradient-to-b from-amiras-ivory to-amiras-cream overflow-hidden"
+            class="relative border-y border-brand-ink/10 bg-gradient-to-b from-brand-parchment to-brand-surface overflow-hidden"
             x-data="{ shown: false }"
             x-init="new IntersectionObserver((entries, obs) => entries.forEach(e => { if (e.isIntersecting) { shown = true; obs.disconnect(); } }), { threshold: 0.2 }).observe($el)"
         >
             {{-- Filet doré décoratif en haut de section. --}}
-            <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amiras-gold/60 to-transparent"></div>
+            <div class="absolute inset-x-0 top-0 h-px bg-brand-signature/15"></div>
 
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
                 <div
@@ -170,27 +170,27 @@
                     style="opacity:0; transform:translateY(1.5rem); transition: opacity .7s ease, transform .7s ease;"
                     :style="shown && 'opacity:1; transform:translateY(0)'"
                 >
-                    <span class="text-xs uppercase tracking-[0.3em] text-amiras-gold">L'expérience Amiras</span>
-                    <h2 class="mt-4 font-display text-3xl sm:text-4xl text-amiras-ink leading-tight">Commandez l'esprit tranquille</h2>
-                    <p class="mt-4 text-amiras-taupe">De la commande à votre porte, chaque détail est pensé pour vous simplifier la vie — et vous faire sentir choyée.</p>
+                    <span class="text-xs uppercase tracking-[0.3em] text-brand-signature">L'expérience Aissatou</span>
+                    <h2 class="mt-4 font-display text-3xl sm:text-4xl text-brand-ink leading-tight">Commandez l'esprit tranquille</h2>
+                    <p class="mt-4 text-brand-muted">De la commande à votre porte, chaque détail est pensé pour vous simplifier la vie — et vous faire sentir choyée.</p>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
                     @foreach ($settings->trust_items as $index => $text)
                         <div
-                            class="trust-card group relative flex flex-col items-center text-center gap-5 rounded-2xl border border-amiras-ink/10 bg-white/50 backdrop-blur-sm px-6 py-12 transition duration-500 hover:-translate-y-2 hover:shadow-2xl"
+                            class="trust-card group relative flex flex-col items-center text-center gap-5 rounded-2xl border border-brand-ink/10 bg-white/50 backdrop-blur-sm px-6 py-12 transition duration-500 hover:-translate-y-2 hover:shadow-2xl"
                             style="opacity:0; transform:translateY(2rem); transition: opacity .7s ease, transform .7s ease, box-shadow .5s ease, border-color .5s ease; transition-delay: {{ $index * 140 }}ms;"
                             :style="shown && 'opacity:1; transform:translateY(0)'"
                         >
-                            <div class="flex items-center justify-center h-16 w-16 rounded-full border border-amiras-gold/40 bg-amiras-gold/5 text-amiras-gold transition duration-500 group-hover:bg-amiras-gold group-hover:text-amiras-cream group-hover:scale-110 group-hover:shadow-lg">
+                            <div class="flex items-center justify-center h-16 w-16 rounded-full border border-brand-signature/40 bg-brand-accent/5 text-brand-signature transition duration-500 group-hover:bg-brand-accent group-hover:text-brand-surface group-hover:scale-110 group-hover:shadow-lg">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="{{ $trustIcons[$index % count($trustIcons)] }}" />
                                 </svg>
                             </div>
 
-                            <p class="font-display text-lg sm:text-xl text-amiras-ink leading-snug">{{ $text }}</p>
+                            <p class="font-display text-lg sm:text-xl text-brand-ink leading-snug">{{ $text }}</p>
 
-                            <span class="block h-px w-10 bg-amiras-gold/50 transition-all duration-500 group-hover:w-20"></span>
+                            <span class="block h-px w-10 bg-brand-accent/50 transition-all duration-500 group-hover:w-20"></span>
                         </div>
                     @endforeach
                 </div>
@@ -204,11 +204,11 @@
     QUE par Alpine (:style), donc le formulaire reste utilisable sans JS. --}}
     <section
         id="avis"
-        class="relative overflow-hidden border-y border-amiras-ink/10 bg-gradient-to-b from-amiras-cream to-amiras-ivory"
+        class="relative overflow-hidden border-y border-brand-ink/10 bg-gradient-to-b from-brand-surface to-brand-parchment"
         x-data="{ shown: false, rating: {{ (int) old('rating', 0) }}, hover: 0 }"
         x-init="new IntersectionObserver((entries, obs) => entries.forEach(e => { if (e.isIntersecting) { shown = true; obs.disconnect(); } }), { threshold: 0.15 }).observe($el)"
     >
-        <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amiras-gold/60 to-transparent"></div>
+        <div class="absolute inset-x-0 top-0 h-px bg-brand-signature/15"></div>
 
         <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
             <div
@@ -216,9 +216,9 @@
                 style="transition: opacity .7s ease, transform .7s ease;"
                 :style="shown ? 'opacity:1; transform:translateY(0)' : 'opacity:0; transform:translateY(1.5rem)'"
             >
-                <span class="text-xs uppercase tracking-[0.3em] text-amiras-gold">Votre avis compte</span>
-                <h2 class="mt-3 font-display text-3xl sm:text-4xl text-amiras-ink leading-tight">Partagez votre expérience</h2>
-                <p class="mt-3 text-amiras-taupe">Quelques mots suffisent. Votre avis sera publié après vérification par notre équipe.</p>
+                <span class="text-xs uppercase tracking-[0.3em] text-brand-signature">Votre avis compte</span>
+                <h2 class="mt-3 font-display text-3xl sm:text-4xl text-brand-ink leading-tight">Partagez votre expérience</h2>
+                <p class="mt-3 text-brand-muted">Quelques mots suffisent. Votre avis sera publié après vérification par notre équipe.</p>
             </div>
 
             @if (session('status') === 'review-submitted')
@@ -233,7 +233,7 @@
             <form
                 method="post"
                 action="{{ route('shop.reviews.store') }}"
-                class="mt-10 space-y-6 rounded-3xl border border-amiras-ink/10 bg-white/70 backdrop-blur-sm p-6 sm:p-10 shadow-sm"
+                class="mt-10 space-y-6 rounded-3xl border border-brand-ink/10 bg-white/70 backdrop-blur-sm p-6 sm:p-10 shadow-sm"
                 style="transition: opacity .8s ease .15s, transform .8s ease .15s;"
                 :style="shown ? 'opacity:1; transform:translateY(0)' : 'opacity:0; transform:translateY(2rem)'"
             >
@@ -252,13 +252,13 @@
                                 class="transition-transform duration-150 hover:scale-125 focus:outline-none"
                             >
                                 <svg class="h-9 w-9 transition-colors duration-200"
-                                     :class="(hover || rating) >= star ? 'text-amiras-gold' : 'text-amiras-ink/15'"
+                                     :class="(hover || rating) >= star ? 'text-brand-signature' : 'text-brand-ink/15'"
                                      viewBox="0 0 24 24" fill="currentColor">
                                     <path d="M11.48 3.5a.56.56 0 011.04 0l2.12 5.11a.56.56 0 00.48.35l5.52.44c.5.04.7.66.32.99l-4.2 3.6a.56.56 0 00-.19.56l1.29 5.38a.56.56 0 01-.84.61l-4.73-2.88a.56.56 0 00-.58 0l-4.73 2.88a.56.56 0 01-.84-.61l1.29-5.38a.56.56 0 00-.19-.56l-4.2-3.6a.56.56 0 01.32-.99l5.52-.44a.56.56 0 00.48-.35L11.48 3.5z" />
                                 </svg>
                             </button>
                         </template>
-                        <span class="ml-2 text-sm text-amiras-taupe" x-text="rating ? rating + '/5' : 'Optionnel'"></span>
+                        <span class="ml-2 text-sm text-brand-muted" x-text="rating ? rating + '/5' : 'Optionnel'"></span>
                     </div>
                     <x-input-error class="mt-2" :messages="$errors->get('rating')" />
                 </div>
@@ -282,17 +282,17 @@
                     <textarea
                         id="comment" name="comment" rows="4" required maxlength="600"
                         @input="count = $event.target.value.length"
-                        class="mt-1 block w-full rounded-xl border-amiras-ink/20 text-sm transition focus:border-amiras-gold focus:ring-amiras-gold"
+                        class="mt-1 block w-full rounded-xl border-brand-ink/20 text-sm transition focus:border-brand-signature focus:ring-brand-accent"
                     >{{ old('comment') }}</textarea>
                     <div class="mt-1 flex items-center justify-between">
                         <x-input-error :messages="$errors->get('comment')" />
-                        <span class="ml-auto text-xs text-amiras-taupe"><span x-text="count">0</span>/600</span>
+                        <span class="ml-auto text-xs text-brand-muted"><span x-text="count">0</span>/600</span>
                     </div>
                 </div>
 
                 <button
                     type="submit"
-                    class="group inline-flex items-center gap-2 rounded-full bg-amiras-ink px-8 py-3 text-sm font-medium uppercase tracking-wide text-amiras-cream transition-all duration-300 hover:bg-amiras-gold hover:text-amiras-ink hover:shadow-lg"
+                    class="group inline-flex items-center gap-2 rounded-full bg-brand-ink px-8 py-3 text-sm font-medium uppercase tracking-wide text-brand-surface transition-all duration-300 hover:bg-brand-accent hover:text-brand-surface hover:shadow-lg"
                 >
                     <span>Envoyer mon avis</span>
                     <svg class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -307,8 +307,8 @@
     placé APRÈS le formulaire. --}}
     @if ($reviews->isNotEmpty())
         <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-            <span class="text-xs uppercase tracking-[0.2em] text-amiras-gold">Avis clients</span>
-            <h2 class="font-display text-3xl text-amiras-ink mt-1 mb-8">Elles nous font confiance</h2>
+            <span class="text-xs uppercase tracking-[0.2em] text-brand-signature">Avis clients</span>
+            <h2 class="font-display text-3xl text-brand-ink mt-1 mb-8">Elles nous font confiance</h2>
 
             <div class="overflow-hidden">
                 <div class="flex gap-6 w-max marquee-track">

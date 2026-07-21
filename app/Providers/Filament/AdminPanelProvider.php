@@ -25,7 +25,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->brandName("L'Univers des Amiras — Admin")
+            ->brandName('Aissatou Store — Admin')
             ->login()
             ->profile()
             ->authGuard('admin')

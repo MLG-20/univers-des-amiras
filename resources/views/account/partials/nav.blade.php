@@ -7,11 +7,11 @@
     ];
 @endphp
 
-<nav class="flex flex-wrap gap-6 border-b border-amiras-ink/10 mb-8 text-sm uppercase tracking-wide">
+<nav class="flex flex-wrap gap-6 border-b border-brand-ink/10 mb-8 text-sm uppercase tracking-wide">
     @foreach ($accountLinks as $routeName => $label)
         <a
             href="{{ route($routeName) }}"
-            class="pb-3 border-b -mb-px {{ request()->routeIs($routeName) ? 'border-amiras-gold text-amiras-ink' : 'border-transparent text-amiras-ink/60 hover:text-amiras-ink' }}"
+            class="pb-3 border-b -mb-px {{ request()->routeIs($routeName) ? 'border-brand-signature text-brand-ink' : 'border-transparent text-brand-ink/60 hover:text-brand-ink' }}"
         >
             {{ $label }}
         </a>

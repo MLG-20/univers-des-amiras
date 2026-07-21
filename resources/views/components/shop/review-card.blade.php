@@ -1,8 +1,8 @@
 @props(['review'])
 
-<div class="flex h-full flex-col gap-4 rounded-2xl border border-amiras-ink/10 bg-white/60 p-6 whitespace-normal">
+<div class="flex h-full flex-col gap-4 rounded-2xl border border-brand-ink/10 bg-white/60 p-6 whitespace-normal">
     @if ($review->rating)
-        <div class="flex gap-0.5 text-amiras-gold">
+        <div class="flex gap-0.5 text-brand-signature">
             @for ($i = 1; $i <= 5; $i++)
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24"
                      fill="{{ $i <= $review->rating ? 'currentColor' : 'none' }}"
@@ -13,16 +13,16 @@
         </div>
     @endif
 
-    <p class="text-sm leading-relaxed text-amiras-ink/80 italic">« {{ $review->comment }} »</p>
+    <p class="text-sm leading-relaxed text-brand-ink/80 italic">« {{ $review->comment }} »</p>
 
     <div class="mt-auto flex items-center gap-3 pt-2">
-        <div class="flex h-9 w-9 items-center justify-center rounded-full bg-amiras-gold/15 font-display text-amiras-gold">
+        <div class="flex h-9 w-9 items-center justify-center rounded-full bg-brand-accent/15 font-display text-brand-signature">
             {{ mb_strtoupper(mb_substr($review->author_name, 0, 1)) }}
         </div>
         <div>
-            <p class="text-sm font-medium text-amiras-ink">{{ $review->author_name }}</p>
+            <p class="text-sm font-medium text-brand-ink">{{ $review->author_name }}</p>
             @if ($review->location)
-                <p class="text-xs text-amiras-taupe">{{ $review->location }}</p>
+                <p class="text-xs text-brand-muted">{{ $review->location }}</p>
             @endif
         </div>
     </div>

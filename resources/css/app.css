@@ -31,64 +31,55 @@
     }
 }
 
-/* Contour doré animé des cartes « L'expérience Amiras » : un halo lumineux qui
-   tourne autour du bord de chaque carte. Technique : un dégradé conique dont
-   l'angle est animé (@property rend l'angle interpolable — Chrome/Edge, Safari
-   16.4+, Firefox 128+), masqué pour ne teinter que le contour de 1,5 px. */
-@property --trust-angle {
-    syntax: '<angle>';
-    initial-value: 0deg;
-    inherits: false;
-}
+/* « Passage Frame » — cadre ouvert du langage graphique Aissatou Store (rapport
+   d'identité p.9). Remplace le halo doré animé de l'ancienne identité : le
+   rapport proscrit explicitement les « effets brillants numériques », et l'or
+   ne fait plus partie du système.
 
-.trust-card::before {
+   Deux équerres fines en Cassis marquent les angles opposés sans refermer la
+   carte — c'est le principe du cadre ouvert. Rien ne tourne, rien ne brille :
+   le mouvement est réservé à l'interaction (survol). */
+.trust-card::before,
+.trust-card::after {
     content: '';
     position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    padding: 1.5px;
-    background: conic-gradient(
-        from var(--trust-angle),
-        rgba(184, 146, 63, 0) 200deg,
-        rgba(184, 146, 63, 0.85) 285deg,
-        rgba(184, 146, 63, 1) 300deg,
-        rgba(184, 146, 63, 0.85) 315deg,
-        rgba(184, 146, 63, 0) 360deg
-    );
-    -webkit-mask:
-        linear-gradient(#000 0 0) content-box,
-        linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor;
-            mask-composite: exclude;
-    animation: trust-border-spin 6s linear infinite;
-    opacity: 0.6;
-    transition: opacity 0.5s ease;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-color: theme('colors.brand.signature');
+    border-style: solid;
+    opacity: 0.35;
+    transition:
+        opacity 0.4s ease,
+        width 0.4s ease,
+        height 0.4s ease;
     pointer-events: none;
 }
 
-.trust-card:hover::before {
-    opacity: 1;
-    animation-duration: 3s;
+.trust-card::before {
+    top: -1px;
+    left: -1px;
+    border-width: 1px 0 0 1px;
+    border-top-left-radius: inherit;
 }
 
-/* Décalage des halos pour qu'ils ne tournent pas tous en même temps. */
-.trust-card:nth-child(2)::before {
-    animation-delay: -2s;
+.trust-card::after {
+    right: -1px;
+    bottom: -1px;
+    border-width: 0 1px 1px 0;
+    border-bottom-right-radius: inherit;
 }
 
-.trust-card:nth-child(3)::before {
-    animation-delay: -4s;
-}
-
-@keyframes trust-border-spin {
-    to {
-        --trust-angle: 360deg;
-    }
+/* Au survol, les équerres s'allongent : le cadre « accueille » sans se fermer. */
+.trust-card:hover::before,
+.trust-card:hover::after {
+    width: 3.25rem;
+    height: 3.25rem;
+    opacity: 0.75;
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .trust-card::before {
-        animation: none;
-        opacity: 0.5;
+    .trust-card::before,
+    .trust-card::after {
+        transition: none;
     }
 }

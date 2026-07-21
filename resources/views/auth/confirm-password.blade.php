@@ -1,6 +1,6 @@
 <x-guest-layout>
-    <h1 class="font-display text-3xl text-amiras-ink mb-2">Confirmer le mot de passe</h1>
-    <p class="text-sm text-amiras-taupe mb-8">
+    <h1 class="font-display text-3xl text-brand-ink mb-2">Confirmer le mot de passe</h1>
+    <p class="text-sm text-brand-muted mb-8">
         Ceci est une zone sécurisée. Confirmez votre mot de passe avant de continuer.
     </p>
 

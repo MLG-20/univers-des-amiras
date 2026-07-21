@@ -18,18 +18,18 @@
             },
         }"
     >
-        <nav class="text-sm text-amiras-taupe mb-6">
-            <a href="{{ route('shop.category', $product->category) }}" class="hover:text-amiras-ink">
+        <nav class="text-sm text-brand-muted mb-6">
+            <a href="{{ route('shop.category', $product->category) }}" class="hover:text-brand-ink">
                 {{ $product->category->name }}
             </a>
             <span class="mx-1">/</span>
-            <span class="text-amiras-ink">{{ $product->name }}</span>
+            <span class="text-brand-ink">{{ $product->name }}</span>
         </nav>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
             <div>
                 <div
-                    class="relative aspect-square w-full overflow-hidden rounded-md bg-amiras-ivory touch-pan-y"
+                    class="relative aspect-square w-full overflow-hidden rounded-md bg-brand-parchment touch-pan-y"
                     x-on:touchstart="touchStartX = $event.changedTouches[0].screenX"
                     x-on:touchend="onSwipe($event, {{ $images->count() }})"
                 >
@@ -58,7 +58,7 @@
                                 type="button"
                                 @click="activeImage = {{ $index }}"
                                 class="w-16 h-16 flex-shrink-0 rounded-md overflow-hidden border"
-                                :class="activeImage === {{ $index }} ? 'border-amiras-gold' : 'border-amiras-ink/10'"
+                                :class="activeImage === {{ $index }} ? 'border-brand-signature' : 'border-brand-ink/10'"
                             >
                                 <img
                                     src="{{ $image->sizedUrl('thumb') }}"
@@ -74,22 +74,22 @@
 
             <div>
                 <h1 class="font-display text-3xl">{{ $product->name }}</h1>
-                <p class="mt-2 text-xl text-amiras-ink">
+                <p class="mt-2 text-xl text-brand-ink">
                     {{ number_format($product->price, 0, ',', ' ') }} FCFA
                 </p>
 
                 @if ($product->isInStock())
-                    <p class="mt-1 text-sm text-amiras-taupe">En stock</p>
+                    <p class="mt-1 text-sm text-brand-muted">En stock</p>
                 @else
-                    <p class="mt-1 text-sm text-amiras-bordeaux">Rupture de stock</p>
+                    <p class="mt-1 text-sm text-brand-signature">Rupture de stock</p>
                 @endif
 
                 @if ($product->description)
-                    <p class="mt-6 text-amiras-ink/80 whitespace-pre-line">{{ $product->description }}</p>
+                    <p class="mt-6 text-brand-ink/80 whitespace-pre-line">{{ $product->description }}</p>
                 @endif
 
                 @if ($errors->has('variant_id') || $errors->has('quantity'))
-                    <p class="mt-4 text-sm text-amiras-bordeaux">
+                    <p class="mt-4 text-sm text-brand-signature">
                         {{ $errors->first('variant_id') ?: $errors->first('quantity') }}
                     </p>
                 @endif
@@ -100,14 +100,14 @@
 
                     @if ($variants->isNotEmpty())
                         <div>
-                            <label for="variant" class="block text-xs uppercase tracking-wide text-amiras-taupe mb-2">
+                            <label for="variant" class="block text-xs uppercase tracking-wide text-brand-muted mb-2">
                                 Choisir une variante
                             </label>
                             <select
                                 id="variant"
                                 name="variant_id"
                                 required
-                                class="w-full rounded-md border border-amiras-ink/20 focus:border-amiras-gold focus:ring-amiras-gold text-sm"
+                                class="w-full rounded-md border border-brand-ink/20 focus:border-brand-signature focus:ring-brand-accent text-sm"
                             >
                                 <option value="">— Sélectionner —</option>
                                 @foreach ($variants as $variant)
@@ -127,7 +127,7 @@
                     @endif
 
                     <div class="mt-4 flex items-center gap-4">
-                        <label for="quantity" class="text-xs uppercase tracking-wide text-amiras-taupe">Quantité</label>
+                        <label for="quantity" class="text-xs uppercase tracking-wide text-brand-muted">Quantité</label>
                         <input
                             type="number"
                             id="quantity"
@@ -135,14 +135,14 @@
                             value="1"
                             min="1"
                             max="50"
-                            class="w-20 rounded-md border border-amiras-ink/20 focus:border-amiras-gold focus:ring-amiras-gold text-sm"
+                            class="w-20 rounded-md border border-brand-ink/20 focus:border-brand-signature focus:ring-brand-accent text-sm"
                         >
                     </div>
 
                     <button
                         type="submit"
                         @disabled(! $product->isInStock())
-                        class="mt-6 w-full sm:w-auto px-8 py-3 border border-amiras-gold text-amiras-ink text-sm uppercase tracking-wide hover:bg-amiras-gold hover:text-white transition disabled:opacity-40 disabled:pointer-events-none"
+                        class="mt-6 w-full sm:w-auto px-8 py-3 border border-brand-signature text-brand-ink text-sm uppercase tracking-wide hover:bg-brand-accent hover:text-white transition disabled:opacity-40 disabled:pointer-events-none"
                     >
                         Ajouter au panier
                     </button>

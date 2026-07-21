@@ -1,10 +1,10 @@
 <section class="space-y-6">
     <header>
-        <h2 class="text-lg font-medium text-amiras-ink">
+        <h2 class="text-lg font-medium text-brand-ink">
             Supprimer le compte
         </h2>
 
-        <p class="mt-1 text-sm text-amiras-taupe">
+        <p class="mt-1 text-sm text-brand-muted">
             Une fois votre compte supprimé, toutes ses données seront définitivement effacées. Avant de supprimer votre compte, téléchargez toute donnée que vous souhaitez conserver.
         </p>
     </header>
@@ -19,11 +19,11 @@
             @csrf
             @method('delete')
 
-            <h2 class="text-lg font-medium text-amiras-ink">
+            <h2 class="text-lg font-medium text-brand-ink">
                 Êtes-vous sûr(e) de vouloir supprimer votre compte ?
             </h2>
 
-            <p class="mt-1 text-sm text-amiras-taupe">
+            <p class="mt-1 text-sm text-brand-muted">
                 Une fois votre compte supprimé, toutes ses données seront définitivement effacées. Saisissez votre mot de passe pour confirmer la suppression définitive de votre compte.
             </p>
 

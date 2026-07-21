@@ -34,7 +34,7 @@ class SiteSetting extends Model
                 'Une livraison préparée avec soin, rien que pour vous',
                 'Une conseillère à votre écoute, comme une amie',
             ],
-            'about_story' => "L'Univers des Amiras est né d'une conviction simple : la mode voilée mérite des pièces choisies avec la même exigence que n'importe quel univers de mode. Voiles, hijabs, parfums et accessoires sont sélectionnés un à un, pour leur qualité autant que pour l'élégance qu'ils apportent au quotidien.\n\nChaque pièce est pensée pour accompagner une femme moderne, fière de son identité, qui ne veut choisir ni entre pudeur et style, ni entre tradition et modernité.",
+            'about_story' => "Aissatou Store est né d'une conviction simple : la mode voilée mérite des pièces choisies avec la même exigence que n'importe quel univers de mode. Voiles, hijabs, parfums et accessoires sont sélectionnés un à un, pour leur qualité autant que pour l'élégance qu'ils apportent au quotidien.\n\nChaque pièce est pensée pour accompagner une femme moderne, fière de son identité, qui ne veut choisir ni entre pudeur et style, ni entre tradition et modernité.",
             'about_quote' => "L'élégance ne se choisit pas, elle se porte avec soi.",
             'about_values' => [
                 ['title' => 'Qualité', 'text' => 'Des matières et finitions choisies avec exigence.'],

@@ -1,6 +1,6 @@
 <x-guest-layout>
-    <h1 class="font-display text-3xl text-amiras-ink mb-2">Mot de passe oublié</h1>
-    <p class="text-sm text-amiras-taupe mb-8">
+    <h1 class="font-display text-3xl text-brand-ink mb-2">Mot de passe oublié</h1>
+    <p class="text-sm text-brand-muted mb-8">
         Indiquez votre email, nous vous enverrons un lien pour choisir un nouveau mot de passe.
     </p>
 
@@ -20,7 +20,7 @@
         </x-primary-button>
     </form>
 
-    <p class="mt-8 text-center text-sm text-amiras-taupe">
-        <a href="{{ route('login') }}" class="text-amiras-ink underline hover:text-amiras-gold">Retour à la connexion</a>
+    <p class="mt-8 text-center text-sm text-brand-muted">
+        <a href="{{ route('login') }}" class="text-brand-ink underline hover:text-brand-signature">Retour à la connexion</a>
     </p>
 </x-guest-layout>

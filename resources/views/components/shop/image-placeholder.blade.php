@@ -18,9 +18,9 @@
     avec le hero et les bannières collection. C'est le visuel neutre affiché pour
     un PRODUIT sans photo (on n'y injecte jamais l'image de sa catégorie, sinon
     plusieurs produits d'une même catégorie sembleraient identiques). --}}
-    <div {{ $attributes->merge(['class' => 'h-full w-full flex items-center justify-center bg-gradient-to-br from-amiras-ivory via-amiras-cream to-amiras-taupe/10']) }}>
-        <div class="flex items-center justify-center w-[38%] aspect-square border border-amiras-gold/50">
-            <span class="font-display text-lg sm:text-2xl lg:text-3xl text-amiras-gold/80">
+    <div {{ $attributes->merge(['class' => 'h-full w-full flex items-center justify-center bg-gradient-to-br from-brand-parchment via-brand-surface to-brand-muted/10']) }}>
+        <div class="flex items-center justify-center w-[38%] aspect-square border border-brand-signature/50">
+            <span class="font-display text-lg sm:text-2xl lg:text-3xl text-brand-signature/80">
                 {{ $initial }}
             </span>
         </div>

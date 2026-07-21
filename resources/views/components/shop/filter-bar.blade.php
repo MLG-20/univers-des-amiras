@@ -14,25 +14,25 @@
 >
     <form @submit.prevent="apply()" class="flex flex-wrap items-end gap-4 mb-8">
         <div class="flex flex-col gap-1">
-            <label class="text-xs uppercase tracking-wide text-amiras-taupe" for="filter-q">Rechercher</label>
+            <label class="text-xs uppercase tracking-wide text-brand-muted" for="filter-q">Rechercher</label>
             <input
                 id="filter-q"
                 type="search"
                 x-model="filters.q"
                 @input.debounce.400ms="apply()"
                 placeholder="Nom du produit, catégorie..."
-                class="rounded-md border-amiras-ink/20 text-sm focus:border-amiras-gold focus:ring-amiras-gold"
+                class="rounded-md border-brand-ink/20 text-sm focus:border-brand-signature focus:ring-brand-accent"
             >
         </div>
 
         @if ($categories)
             <div class="flex flex-col gap-1">
-                <label class="text-xs uppercase tracking-wide text-amiras-taupe" for="filter-category">Catégorie</label>
+                <label class="text-xs uppercase tracking-wide text-brand-muted" for="filter-category">Catégorie</label>
                 <select
                     id="filter-category"
                     x-model="filters.category_id"
                     @change="apply()"
-                    class="rounded-md border-amiras-ink/20 text-sm focus:border-amiras-gold focus:ring-amiras-gold"
+                    class="rounded-md border-brand-ink/20 text-sm focus:border-brand-signature focus:ring-brand-accent"
                 >
                     <option value="">Toutes</option>
                     @foreach ($categories as $category)
@@ -43,26 +43,26 @@
         @endif
 
         <div class="flex flex-col gap-1">
-            <label class="text-xs uppercase tracking-wide text-amiras-taupe" for="filter-min">Prix min</label>
+            <label class="text-xs uppercase tracking-wide text-brand-muted" for="filter-min">Prix min</label>
             <input
                 id="filter-min"
                 type="number"
                 min="0"
                 x-model="filters.min_price"
                 @input.debounce.400ms="apply()"
-                class="w-28 rounded-md border-amiras-ink/20 text-sm focus:border-amiras-gold focus:ring-amiras-gold"
+                class="w-28 rounded-md border-brand-ink/20 text-sm focus:border-brand-signature focus:ring-brand-accent"
             >
         </div>
 
         <div class="flex flex-col gap-1">
-            <label class="text-xs uppercase tracking-wide text-amiras-taupe" for="filter-max">Prix max</label>
+            <label class="text-xs uppercase tracking-wide text-brand-muted" for="filter-max">Prix max</label>
             <input
                 id="filter-max"
                 type="number"
                 min="0"
                 x-model="filters.max_price"
                 @input.debounce.400ms="apply()"
-                class="w-28 rounded-md border-amiras-ink/20 text-sm focus:border-amiras-gold focus:ring-amiras-gold"
+                class="w-28 rounded-md border-brand-ink/20 text-sm focus:border-brand-signature focus:ring-brand-accent"
             >
         </div>
 

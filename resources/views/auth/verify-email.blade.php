@@ -1,6 +1,6 @@
 <x-guest-layout>
-    <h1 class="font-display text-3xl text-amiras-ink mb-2">Vérifiez votre email</h1>
-    <p class="text-sm text-amiras-taupe mb-8">
+    <h1 class="font-display text-3xl text-brand-ink mb-2">Vérifiez votre email</h1>
+    <p class="text-sm text-brand-muted mb-8">
         Merci de votre inscription ! Avant de commencer, confirmez votre adresse email en cliquant sur le lien
         que nous venons de vous envoyer. Si vous ne l'avez pas reçu, nous vous en renvoyons un volontiers.
     </p>
@@ -19,7 +19,7 @@
 
         <form method="POST" action="{{ route('logout') }}">
             @csrf
-            <button type="submit" class="underline text-sm text-amiras-taupe hover:text-amiras-ink">
+            <button type="submit" class="underline text-sm text-brand-muted hover:text-brand-ink">
                 Se déconnecter
             </button>
         </form>

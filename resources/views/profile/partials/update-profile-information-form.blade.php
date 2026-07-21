@@ -1,10 +1,10 @@
 <section>
     <header>
-        <h2 class="text-lg font-medium text-amiras-ink">
+        <h2 class="text-lg font-medium text-brand-ink">
             Informations personnelles
         </h2>
 
-        <p class="mt-1 text-sm text-amiras-taupe">
+        <p class="mt-1 text-sm text-brand-muted">
             Nom, email et téléphone associés à votre compte.
         </p>
     </header>
@@ -30,10 +30,10 @@
 
             @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
                 <div>
-                    <p class="text-sm mt-2 text-amiras-ink/70">
+                    <p class="text-sm mt-2 text-brand-ink/70">
                         Votre adresse email n'est pas vérifiée.
 
-                        <button form="send-verification" class="underline text-sm text-amiras-taupe hover:text-amiras-ink rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amiras-gold">
+                        <button form="send-verification" class="underline text-sm text-brand-muted hover:text-brand-ink rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-accent">
                             Cliquez ici pour renvoyer l'email de vérification.
                         </button>
                     </p>
@@ -62,7 +62,7 @@
                     x-show="show"
                     x-transition
                     x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-amiras-taupe"
+                    class="text-sm text-brand-muted"
                 >Enregistré.</p>
             @endif
         </div>

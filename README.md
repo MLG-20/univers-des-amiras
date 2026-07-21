@@ -1,4 +1,4 @@
-# L'Univers des Amiras
+# Aissatou Store
 
 Boutique e-commerce de mode féminine (voiles/hijabs, parfums, sacs à main, collants, vêtements), mono-vendeur, mobile-first, ciblant le Sénégal.
 

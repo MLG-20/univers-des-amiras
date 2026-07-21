@@ -30,7 +30,7 @@
     <x-input-error class="mt-2" :messages="$errors->get('landmark')" />
 </div>
 
-<label class="flex items-center gap-2 text-sm text-amiras-ink/80">
+<label class="flex items-center gap-2 text-sm text-brand-ink/80">
     <input type="checkbox" name="is_default" value="1" @checked(old('is_default', $address?->is_default))>
     Définir comme adresse par défaut
 </label>

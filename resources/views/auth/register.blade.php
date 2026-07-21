@@ -1,6 +1,6 @@
 <x-guest-layout>
-    <h1 class="font-display text-3xl text-amiras-ink mb-2">Créer un compte</h1>
-    <p class="text-sm text-amiras-taupe mb-8">Rejoignez l'Univers des Amiras en quelques instants.</p>
+    <h1 class="font-display text-3xl text-brand-ink mb-2">Créer un compte</h1>
+    <p class="text-sm text-brand-muted mb-8">Rejoignez Aissatou Store en quelques instants.</p>
 
     <form method="POST" action="{{ route('register') }}" class="space-y-5">
         @csrf
@@ -34,8 +34,8 @@
         </x-primary-button>
     </form>
 
-    <p class="mt-8 text-center text-sm text-amiras-taupe">
+    <p class="mt-8 text-center text-sm text-brand-muted">
         Déjà inscrite ?
-        <a href="{{ route('login') }}" class="text-amiras-ink underline hover:text-amiras-gold">Connectez-vous</a>
+        <a href="{{ route('login') }}" class="text-brand-ink underline hover:text-brand-signature">Connectez-vous</a>
     </p>
 </x-guest-layout>

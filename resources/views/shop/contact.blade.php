@@ -1,15 +1,15 @@
 <x-shop-layout :title="'Contact — '.config('app.name')">
-    <section class="w-full bg-gradient-to-br from-amiras-ivory via-amiras-cream to-amiras-taupe/20 border-b border-amiras-ink/10 py-14 sm:py-20">
+    <section class="w-full bg-gradient-to-br from-brand-parchment via-brand-surface to-brand-muted/20 border-b border-brand-ink/10 py-14 sm:py-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <span class="text-xs uppercase tracking-[0.2em] text-amiras-gold">Une question ?</span>
-            <h1 class="font-display text-4xl sm:text-5xl text-amiras-ink mt-1">Contactez-nous</h1>
-            <p class="mt-3 text-amiras-taupe max-w-xl">Une question sur un produit, une commande, une livraison ? Écrivez-nous, nous répondons rapidement.</p>
+            <span class="text-xs uppercase tracking-[0.2em] text-brand-signature">Une question ?</span>
+            <h1 class="font-display text-4xl sm:text-5xl text-brand-ink mt-1">Contactez-nous</h1>
+            <p class="mt-3 text-brand-muted max-w-xl">Une question sur un produit, une commande, une livraison ? Écrivez-nous, nous répondons rapidement.</p>
         </div>
     </section>
 
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 grid md:grid-cols-2 gap-12">
         <div>
-            <h2 class="font-display text-xl text-amiras-ink mb-6">Écrivez-nous</h2>
+            <h2 class="font-display text-xl text-brand-ink mb-6">Écrivez-nous</h2>
 
             @if (session('status') === 'message-sent')
                 <p class="text-sm text-green-700 mb-4">Votre message a bien été envoyé, merci ! Nous vous répondrons rapidement.</p>
@@ -37,7 +37,7 @@
                         name="message"
                         rows="5"
                         required
-                        class="mt-1 block w-full rounded-md border-amiras-ink/20 focus:border-amiras-gold focus:ring-amiras-gold text-sm"
+                        class="mt-1 block w-full rounded-md border-brand-ink/20 focus:border-brand-signature focus:ring-brand-accent text-sm"
                     >{{ old('message') }}</textarea>
                     <x-input-error class="mt-2" :messages="$errors->get('message')" />
                 </div>
@@ -48,22 +48,22 @@
 
         <div class="space-y-8">
             <div>
-                <h2 class="font-display text-xl text-amiras-ink mb-4">Coordonnées directes</h2>
-                <ul class="space-y-3 text-amiras-ink/80">
+                <h2 class="font-display text-xl text-brand-ink mb-4">Coordonnées directes</h2>
+                <ul class="space-y-3 text-brand-ink/80">
                     <li class="flex items-center gap-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-amiras-gold shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-brand-signature shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.362-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
                         </svg>
                         WhatsApp : {{ $settings->contact_whatsapp }}
                     </li>
                     <li class="flex items-center gap-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-amiras-gold shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-brand-signature shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
                         </svg>
                         {{ $settings->contact_email }}
                     </li>
                     <li class="flex items-center gap-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-amiras-gold shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-brand-signature shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
                         </svg>
@@ -73,8 +73,8 @@
             </div>
 
             <div>
-                <h2 class="font-display text-xl text-amiras-ink mb-4">Horaires &amp; livraison</h2>
-                <p class="text-amiras-ink/80 text-sm leading-relaxed">
+                <h2 class="font-display text-xl text-brand-ink mb-4">Horaires &amp; livraison</h2>
+                <p class="text-brand-ink/80 text-sm leading-relaxed">
                     {{ $settings->contact_hours }}
                 </p>
             </div>

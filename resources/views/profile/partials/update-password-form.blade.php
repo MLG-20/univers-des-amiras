@@ -1,10 +1,10 @@
 <section>
     <header>
-        <h2 class="text-lg font-medium text-amiras-ink">
+        <h2 class="text-lg font-medium text-brand-ink">
             Mot de passe
         </h2>
 
-        <p class="mt-1 text-sm text-amiras-taupe">
+        <p class="mt-1 text-sm text-brand-muted">
             Utilisez un mot de passe long et unique pour protéger votre compte.
         </p>
     </header>
@@ -40,7 +40,7 @@
                     x-show="show"
                     x-transition
                     x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-amiras-taupe"
+                    class="text-sm text-brand-muted"
                 >Enregistré.</p>
             @endif
         </div>

@@ -5,11 +5,11 @@
         @include('account.partials.nav')
 
         <div class="space-y-6 max-w-xl">
-            <div class="p-6 sm:p-8 bg-white border border-amiras-ink/10 rounded-2xl">
+            <div class="p-6 sm:p-8 bg-white border border-brand-ink/10 rounded-2xl">
                 @include('profile.partials.update-profile-information-form')
             </div>
 
-            <div class="p-6 sm:p-8 bg-white border border-amiras-ink/10 rounded-2xl">
+            <div class="p-6 sm:p-8 bg-white border border-brand-ink/10 rounded-2xl">
                 @include('profile.partials.update-password-form')
             </div>
 

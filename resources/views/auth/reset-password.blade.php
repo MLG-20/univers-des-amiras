@@ -1,6 +1,6 @@
 <x-guest-layout>
-    <h1 class="font-display text-3xl text-amiras-ink mb-2">Nouveau mot de passe</h1>
-    <p class="text-sm text-amiras-taupe mb-8">Choisissez un nouveau mot de passe pour votre compte.</p>
+    <h1 class="font-display text-3xl text-brand-ink mb-2">Nouveau mot de passe</h1>
+    <p class="text-sm text-brand-muted mb-8">Choisissez un nouveau mot de passe pour votre compte.</p>
 
     <form method="POST" action="{{ route('password.store') }}" class="space-y-5">
         @csrf

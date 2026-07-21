@@ -8,7 +8,7 @@
         <title>{{ config('app.name') }}</title>
 
         <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=work-sans:400,500,600&family=playfair-display:500,600,700&display=swap" rel="stylesheet" />
+        <link href="https://fonts.bunny.net/css?family=inter:400,500,600&family=fraunces:400,500,600,700&display=swap" rel="stylesheet" />
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
@@ -26,37 +26,37 @@
             image de fond si réglée, sinon le "bandeau signature" ébène + or de
             la charte, comme le hero. Titre et sous-texte éditables aussi. --}}
             <div
-                class="hidden lg:flex lg:w-1/2 relative flex-col justify-between p-12 text-amiras-cream overflow-hidden bg-amiras-ink bg-cover bg-center"
+                class="hidden lg:flex lg:w-1/2 relative flex-col justify-between p-12 text-brand-surface overflow-hidden bg-brand-ink bg-cover bg-center"
                 @if ($authImage) style="background-image: url('{{ $authImage }}');" @endif
             >
                 @if ($authImage)
                     {{-- Voile sombre pour garder le texte crème lisible sur la photo. --}}
-                    <div class="absolute inset-0 bg-amiras-ink/55"></div>
+                    <div class="absolute inset-0 bg-brand-ink/55"></div>
                 @else
-                    <div class="absolute inset-0 opacity-25 bg-[radial-gradient(circle_at_20%_20%,rgba(184,146,63,0.6),transparent_60%)]"></div>
-                    <div class="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_85%_85%,rgba(184,146,63,0.5),transparent_55%)]"></div>
+                    <div class="absolute inset-0 opacity-25 bg-[radial-gradient(circle_at_20%_20%,rgba(74,24,51,0.6),transparent_60%)]"></div>
+                    <div class="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_85%_85%,rgba(74,24,51,0.5),transparent_55%)]"></div>
                 @endif
 
                 <a href="{{ route('home') }}" class="relative font-display text-2xl tracking-wide">
-                    L'Univers des Amiras
+                    Aissatou Store
                 </a>
 
                 <div class="relative">
                     <p class="font-display text-3xl xl:text-4xl leading-snug max-w-md">
                         {{ $authSettings->auth_title }}
                     </p>
-                    <p class="mt-4 text-amiras-cream/70 max-w-sm">
+                    <p class="mt-4 text-brand-surface/70 max-w-sm">
                         {{ $authSettings->auth_subtitle }}
                     </p>
                 </div>
 
-                <p class="relative text-xs text-amiras-cream/50">&copy; {{ now()->year }} L'Univers des Amiras</p>
+                <p class="relative text-xs text-brand-surface/50">&copy; {{ now()->year }} Aissatou Store</p>
             </div>
 
-            <div class="flex-1 flex flex-col justify-center items-center bg-amiras-cream px-6 py-16">
+            <div class="flex-1 flex flex-col justify-center items-center bg-brand-surface px-6 py-16">
                 <div class="w-full max-w-sm">
-                    <a href="{{ route('home') }}" class="lg:hidden block text-center font-display text-xl mb-10 text-amiras-ink">
-                        L'Univers des Amiras
+                    <a href="{{ route('home') }}" class="lg:hidden block text-center font-display text-xl mb-10 text-brand-ink">
+                        Aissatou Store
                     </a>
 
                     {{ $slot }}

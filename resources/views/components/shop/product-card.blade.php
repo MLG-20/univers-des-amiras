@@ -1,7 +1,7 @@
 @props(['product'])
 
 <a href="{{ route('shop.product', $product) }}" class="group block">
-    <div class="aspect-square w-full overflow-hidden rounded-md bg-amiras-ivory border border-amiras-ink/10 group-hover:border-amiras-gold transition">
+    <div class="aspect-square w-full overflow-hidden rounded-md bg-brand-parchment border border-brand-ink/10 group-hover:border-brand-signature transition">
         @if ($image = $product->primaryImage())
             <img
                 src="{{ $image->sizedUrl('thumb') }}"
@@ -17,12 +17,12 @@
     </div>
 
     <div class="mt-3 flex flex-col gap-1">
-        <span class="text-[0.65rem] uppercase tracking-[0.15em] text-amiras-taupe">{{ $product->category->name }}</span>
-        <h3 class="font-display text-base text-amiras-ink group-hover:text-amiras-gold transition">{{ $product->name }}</h3>
-        <p class="text-sm font-medium text-amiras-ink">{{ number_format($product->price, 0, ',', ' ') }} FCFA</p>
+        <span class="text-[0.65rem] uppercase tracking-[0.15em] text-brand-muted">{{ $product->category->name }}</span>
+        <h3 class="font-display text-base text-brand-ink group-hover:text-brand-signature transition">{{ $product->name }}</h3>
+        <p class="text-sm font-medium text-brand-ink">{{ number_format($product->price, 0, ',', ' ') }} FCFA</p>
 
         @unless ($product->isInStock())
-            <span class="text-xs text-amiras-bordeaux">Rupture de stock</span>
+            <span class="text-xs text-brand-signature">Rupture de stock</span>
         @endunless
     </div>
 </a>

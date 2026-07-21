@@ -305,4 +305,8 @@ La cliente a transmis le **rapport d'identité visuelle « Aissatou Store » V3*
 
 **Portée réelle du changement :** couche présentation uniquement. Aucun impact sur le domaine métier (catalogue, panier, comptes, commandes), la sécurité ou la scalabilité. Le code ne contient aucune couleur hex en dur dans les vues Blade — tout passe par les tokens Tailwind `amiras-*`, ce qui rend la substitution de palette essentiellement mécanique.
 
-Détail du plan de reprise et des arbitrages en attente : voir `docs/progress/02b-reidentite-aissatou-store.md`.
+**Suite du travail**, la Phase 2 elle-même n'étant pas rouverte :
+- **Phase 2.1** — ré-identité visuelle : `docs/progress/02.1-reidentite-aissatou-store.md`
+- **Phase 2.2** — modules issus des maquettes (Journal, Collections, Wishlist, filtre Matière) : `docs/files/02.2-modules-maquette.md`
+
+Deux écarts assumés vis-à-vis de la maquette, tranchés par Ahmed le 2026-07-21 : les prix restent en **francs CFA** (le rapport les affiche en euros — le code est déjà correct, rien à changer) et les typographies sous licence payante sont remplacées par des **substituts libres**.
