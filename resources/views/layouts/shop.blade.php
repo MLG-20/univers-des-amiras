@@ -29,7 +29,7 @@
              le mobile avait dérivé vers un accordéon « Catalogue » absent du
              rapport. --}}
         @php
-            $navLinks = [['label' => 'Nouveautés', 'url' => route('shop.index'), 'children' => []]];
+            $navLinks = [['label' => 'Nouveautés', 'url' => route('shop.index', ['nouveautes' => 1]), 'children' => []]];
 
             foreach ($navCategories as $navCategory) {
                 $navLinks[] = [

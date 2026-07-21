@@ -22,8 +22,16 @@ class HomeController extends Controller
                 ->whereNull('parent_id')
                 ->orderBy('position')
                 ->get(),
+            // Nouveautés = produits marqués « Nouveauté » en admin (cf.
+            // Product::scopeNewArrivals). Auparavant `latest()->take(8)`, qui
+            // affichait les dernières lignes créées : comme tout le catalogue a
+            // été importé d'un coup, la section montrait des sacs et des parfums
+            // au hasard de l'`id`, et le marquage fait en admin restait sans
+            // effet. La section se masque désormais d'elle-même si rien n'est
+            // marqué, plutôt que d'annoncer de fausses nouveautés.
             'newProducts' => Product::query()
                 ->active()
+                ->newArrivals()
                 ->with(['category', 'images', 'variants' => fn ($query) => $query->active()])
                 ->latest()
                 ->take(8)

@@ -29,6 +29,7 @@
             min_price: @js((string) request('min_price', '')),
             max_price: @js((string) request('max_price', '')),
             in_stock: @js(request()->boolean('in_stock')),
+            nouveautes: @js(request()->boolean('nouveautes')),
         },
     })"
     class="grid gap-10 lg:grid-cols-[16rem,1fr]"
@@ -121,6 +122,30 @@
                             class="w-full rounded-sm border-brand-ink/20 bg-transparent text-xs focus:border-brand-signature focus:ring-brand-accent"
                         >
                     </div>
+                </div>
+
+                {{-- « Sélection » : les signaux commerciaux du rapport (p.13)
+                     deviennent des critères de tri. Pour l'instant seul le
+                     signal Nouveauté est filtrable — c'est l'onglet de la
+                     maquette ; Sélectionné et Édition limitée suivront avec les
+                     autres filtres de la p.12 en Phase 2.2. --}}
+                <div class="flex flex-col gap-3 border-t border-brand-ink/10 pt-6">
+                    <span class="text-[0.65rem] uppercase tracking-[0.18em] text-brand-muted">Sélection</span>
+
+                    {{-- Navigation complète, et non un rafraîchissement de la
+                         grille : ce filtre change le bandeau de tête de la page
+                         (« Nouveautés » ou « Tout le catalogue »), or `apply()`
+                         ne remplace que la grille. En AJAX, le titre resterait
+                         donc en contradiction avec ce qui est affiché dessous. --}}
+                    <label class="flex items-center gap-2.5 text-sm">
+                        <input
+                            type="checkbox"
+                            x-model="filters.nouveautes"
+                            @change="filters.nouveautes = $event.target.checked; window.location = buildUrl()"
+                            class="rounded-sm border-brand-ink/30 text-brand-accent focus:ring-brand-accent"
+                        >
+                        Nouveautés uniquement
+                    </label>
                 </div>
 
                 <div class="flex flex-col gap-3 border-t border-brand-ink/10 pt-6">

@@ -30,6 +30,11 @@ class ProductController extends Controller
         return view('shop.index', [
             'products' => $products,
             'categories' => Category::query()->active()->orderBy('position')->get(),
+            // L'onglet « Nouveautés » de la maquette mène ici, filtré. Sans ce
+            // drapeau, la page s'annoncerait « Tout le catalogue » alors qu'elle
+            // n'en montre qu'une partie — c'est exactement ce qui donnait
+            // l'impression que l'onglet ne servait à rien.
+            'showingNewArrivals' => $request->boolean('nouveautes'),
         ]);
     }
 

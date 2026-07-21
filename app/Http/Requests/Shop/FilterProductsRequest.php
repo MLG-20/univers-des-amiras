@@ -29,6 +29,9 @@ class FilterProductsRequest extends FormRequest
                 $this->filled('min_price') ? 'gte:min_price' : null,
             ]),
             'in_stock' => ['nullable', 'boolean'],
+            // Paramètre en français comme le reste des routes publiques : c'est
+            // une URL que la cliente peut partager telle quelle.
+            'nouveautes' => ['nullable', 'boolean'],
         ];
     }
 
@@ -36,7 +39,7 @@ class FilterProductsRequest extends FormRequest
      * Valeurs prêtes à l'emploi pour Product::scopeFilter() — le contrôleur
      * n'a jamais à relire les paramètres bruts de la requête.
      *
-     * @return array{q: ?string, category_id: ?int, min_price: ?float, max_price: ?float, in_stock: bool}
+     * @return array{q: ?string, category_id: ?int, min_price: ?float, max_price: ?float, in_stock: bool, new_arrivals: bool}
      */
     public function filters(): array
     {
@@ -55,6 +58,7 @@ class FilterProductsRequest extends FormRequest
             'min_price' => isset($validated['min_price']) ? (float) $validated['min_price'] : null,
             'max_price' => isset($validated['max_price']) ? (float) $validated['max_price'] : null,
             'in_stock' => $this->boolean('in_stock'),
+            'new_arrivals' => $this->boolean('nouveautes'),
         ];
     }
 }

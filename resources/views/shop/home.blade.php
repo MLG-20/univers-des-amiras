@@ -38,7 +38,7 @@
                             {{ $defaultSlide['cta_label'] }}
                         </x-shop.cta>
 
-                        <x-shop.cta :href="route('shop.index')" on-dark>
+                        <x-shop.cta :href="route('shop.index', ['nouveautes' => 1])" on-dark>
                             Explorer les nouveautés
                         </x-shop.cta>
                     </div>
@@ -73,7 +73,7 @@
                                 </x-shop.cta>
                             @endif
 
-                            <x-shop.cta :href="route('shop.index')" on-dark>
+                            <x-shop.cta :href="route('shop.index', ['nouveautes' => 1])" on-dark>
                                 Explorer les nouveautés
                             </x-shop.cta>
                         </div>
@@ -152,23 +152,47 @@
         </section>
     @endif
 
-    {{-- Nouveautés — défilement horizontal --}}
+    {{-- NOUVEAUTÉS — les produits marqués « Nouveauté » en admin.
+
+         La section disparaît si rien n'est marqué : mieux vaut ne rien annoncer
+         qu'annoncer de fausses nouveautés, ce que faisait la version précédente
+         en affichant les dernières lignes créées. --}}
     @if ($newProducts->isNotEmpty())
         <section class="max-w-shell mx-auto px-4 sm:px-6 lg:px-10 xl:px-12 py-16">
-            <span class="text-xs uppercase tracking-[0.2em] text-brand-signature">À découvrir</span>
-            <h2 class="font-display text-3xl text-brand-ink mt-1 mb-8">Nouveautés</h2>
+            <div class="mb-8 flex items-baseline justify-between gap-4">
+                <div>
+                    <span class="text-xs uppercase tracking-[0.2em] text-brand-signature">À découvrir</span>
+                    <h2 class="font-display text-3xl text-brand-ink mt-1">Nouveautés</h2>
+                </div>
 
-            <div class="overflow-hidden">
-                <div class="flex gap-6 w-max marquee-track">
-                    @foreach ([1, 2] as $repeat)
-                        @foreach ($newProducts as $product)
-                            <div class="w-40 sm:w-56 flex-shrink-0">
-                                <x-shop.product-card :product="$product" />
-                            </div>
+                <a href="{{ route('shop.index', ['nouveautes' => 1]) }}" class="whitespace-nowrap text-xs uppercase tracking-[0.15em] text-brand-ink/60 transition hover:text-brand-signature">
+                    Tout voir →
+                </a>
+            </div>
+
+            {{-- Le défilement continu suppose assez de cartes pour que la boucle
+                 ne se voie pas : en dessous, la piste dupliquée laisserait des
+                 trous et répéterait visiblement les mêmes produits. On retombe
+                 alors sur une grille fixe, qui reste juste avec une seule pièce. --}}
+            @if ($newProducts->count() >= 5)
+                <div class="overflow-hidden">
+                    <div class="flex gap-6 w-max marquee-track">
+                        @foreach ([1, 2] as $repeat)
+                            @foreach ($newProducts as $product)
+                                <div class="w-40 sm:w-56 flex-shrink-0">
+                                    <x-shop.product-card :product="$product" />
+                                </div>
+                            @endforeach
                         @endforeach
+                    </div>
+                </div>
+            @else
+                <div class="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
+                    @foreach ($newProducts as $product)
+                        <x-shop.product-card :product="$product" />
                     @endforeach
                 </div>
-            </div>
+            @endif
         </section>
     @endif
 

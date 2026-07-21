@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Shop;
 
+use App\Enums\Catalogue\ProductLabel;
 use App\Models\Catalogue\Category;
 use App\Models\Catalogue\Product;
 use App\Models\Catalogue\ProductVariant;
@@ -14,14 +15,62 @@ class CatalogueTest extends TestCase
 
     public function test_the_homepage_lists_active_products_only(): void
     {
-        $visible = Product::factory()->create(['name' => 'Voile visible', 'is_active' => true]);
-        $hidden = Product::factory()->create(['name' => 'Voile caché', 'is_active' => false]);
+        $visible = Product::factory()->create(['name' => 'Voile visible', 'is_active' => true, 'label' => ProductLabel::New]);
+        $hidden = Product::factory()->create(['name' => 'Voile caché', 'is_active' => false, 'label' => ProductLabel::New]);
 
         $response = $this->get('/');
 
         $response->assertOk();
         $response->assertSee($visible->name);
         $response->assertDontSee($hidden->name);
+    }
+
+    public function test_the_homepage_only_shows_products_marked_as_new(): void
+    {
+        $marked = Product::factory()->create(['name' => 'Hijab annoncé', 'is_active' => true, 'label' => ProductLabel::New]);
+        // Créé APRÈS le précédent : sous l'ancienne règle (« les dernières
+        // lignes créées »), c'est lui qui serait apparu en nouveauté.
+        $recent = Product::factory()->create(['name' => 'Sac récent', 'is_active' => true, 'label' => null]);
+
+        $response = $this->get('/');
+
+        $response->assertOk();
+        $response->assertSee($marked->name);
+        $response->assertDontSee($recent->name);
+    }
+
+    public function test_the_homepage_hides_the_new_arrivals_section_when_nothing_is_marked(): void
+    {
+        Product::factory()->count(3)->create(['is_active' => true, 'label' => null]);
+
+        $response = $this->get('/');
+
+        $response->assertOk();
+        // Mieux vaut ne rien annoncer que d'annoncer de fausses nouveautés.
+        $response->assertDontSee('À découvrir');
+    }
+
+    public function test_the_catalogue_filters_on_new_arrivals(): void
+    {
+        $marked = Product::factory()->create(['name' => 'Foulard marqué', 'is_active' => true, 'label' => ProductLabel::New]);
+        $other = Product::factory()->create(['name' => 'Foulard courant', 'is_active' => true, 'label' => null]);
+        $selected = Product::factory()->create(['name' => 'Foulard sélectionné', 'is_active' => true, 'label' => ProductLabel::Selected]);
+
+        $response = $this->get('/catalogue?nouveautes=1');
+
+        $response->assertOk();
+        $response->assertSee($marked->name);
+        $response->assertDontSee($other->name);
+        // Un autre signal commercial n'est pas une nouveauté.
+        $response->assertDontSee($selected->name);
+    }
+
+    public function test_the_catalogue_announces_which_selection_it_shows(): void
+    {
+        Product::factory()->create(['is_active' => true, 'label' => ProductLabel::New]);
+
+        $this->get('/catalogue?nouveautes=1')->assertSee('Nouveautés')->assertDontSee('Tout le catalogue');
+        $this->get('/catalogue')->assertSee('Tout le catalogue');
     }
 
     public function test_the_catalogue_page_paginates_products(): void

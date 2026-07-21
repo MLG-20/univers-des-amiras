@@ -56,14 +56,44 @@ class Product extends Model
     }
 
     /**
+     * Les nouveautés de la boutique.
+     *
+     * DÉFINITION : est une nouveauté le produit que la cliente a explicitement
+     * marqué « Nouveauté » en admin — rien d'autre.
+     *
+     * Ce scope existe parce que les trois endroits qui parlaient de nouveautés
+     * disaient trois choses différentes, et aucune n'était la bonne :
+     * · l'onglet « Nouveautés » pointait sur le catalogue complet, sans filtre ;
+     * · la section « À découvrir » de l'accueil affichait `latest()->take(8)`,
+     *   soit les dernières lignes créées — or tous les produits ayant été
+     *   importés dans le même intervalle de quelques secondes, l'ordre était
+     *   décidé par l'`id` et n'avait aucun sens commercial ;
+     * · le label « Nouveauté » saisi en admin, lui, n'avait d'effet nulle part.
+     *
+     * Fonder la règle sur le label plutôt que sur `created_at` donne la main à
+     * la cliente : une pièce reste une nouveauté tant qu'elle le décide, et
+     * cesse de l'être quand elle retire le marquage. C'est aussi cohérent avec
+     * le rapport d'identité (p.13), qui veut que les labels portent une
+     * information qui « modifie réellement la décision ».
+     */
+    public function scopeNewArrivals(Builder $query): Builder
+    {
+        return $query->where('label', ProductLabel::New);
+    }
+
+    /**
      * Recherche/filtres combinables du catalogue public (section 2.1 du cahier
      * des charges). Toutes les valeurs sont déjà validées et nettoyées en amont
      * par FilterProductsRequest — ce scope ne fait qu'assembler la requête.
      *
-     * @param  array{q: ?string, category_id: ?int, min_price: ?float, max_price: ?float, in_stock: bool}  $filters
+     * @param  array{q: ?string, category_id: ?int, min_price: ?float, max_price: ?float, in_stock: bool, new_arrivals: bool}  $filters
      */
     public function scopeFilter(Builder $query, array $filters): Builder
     {
+        if ($filters['new_arrivals'] ?? false) {
+            $query->newArrivals();
+        }
+
         if (filled($filters['q'] ?? null)) {
             // Échappement des caractères spéciaux LIKE (%, _, \) pour qu'ils soient
             // traités comme du texte littéral et non comme des jokers de motif.
