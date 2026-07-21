@@ -33,98 +33,105 @@
             @endif
         >
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex items-center justify-between h-16">
-                    <a href="{{ route('home') }}" class="font-display text-lg sm:text-xl tracking-wide whitespace-nowrap">
-                        Aissatou Store
-                    </a>
-
-                    <nav class="hidden md:flex items-center gap-8 text-sm uppercase tracking-wide">
-                        <a href="{{ route('home') }}" class="text-current opacity-80 hover:opacity-100 border-b border-transparent hover:border-brand-signature pb-1 transition">
-                            Accueil
+                {{-- Structure de la maquette p.10 : catégories à gauche, signature
+                     centrée, actions à droite. Grille en trois colonnes égales pour
+                     que le logo reste optiquement centré quelle que soit la
+                     longueur de la navigation. --}}
+                <div class="grid grid-cols-[auto,1fr,auto] lg:grid-cols-3 items-center h-16 gap-4">
+                    <nav class="hidden lg:flex items-center gap-6 text-[0.7rem] uppercase tracking-[0.12em]">
+                        <a href="{{ route('shop.index') }}" class="text-current opacity-80 hover:opacity-100 border-b border-transparent hover:border-brand-accent pb-1 transition">
+                            Nouveautés
                         </a>
 
-                        <div class="relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
-                            <a
-                                href="{{ route('shop.index') }}"
-                                class="flex items-center gap-1 text-current opacity-80 hover:opacity-100 border-b border-transparent hover:border-brand-signature pb-1 transition"
-                            >
-                                Catalogue
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                                </svg>
-                            </a>
+                        {{-- Les catégories deviennent la navigation de premier niveau,
+                             conformément à la maquette (plus de menu « Catalogue »). --}}
+                        @foreach ($navCategories as $navCategory)
+                            @if ($navCategory['children'])
+                                <div class="relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
+                                    <a
+                                        href="{{ route('shop.category', $navCategory['slug']) }}"
+                                        class="flex items-center gap-1 text-current opacity-80 hover:opacity-100 border-b border-transparent hover:border-brand-accent pb-1 transition"
+                                    >
+                                        {{ $navCategory['name'] }}
+                                    </a>
 
-                            <div
-                                x-show="open"
-                                x-cloak
-                                x-transition
-                                class="absolute left-0 top-full w-64 bg-white border border-brand-ink/10 shadow-lg normal-case tracking-normal py-2 z-40"
-                            >
-                                <a href="{{ route('shop.index') }}" class="block px-4 py-2 text-sm font-medium text-brand-ink hover:bg-brand-surface">
-                                    Tout le catalogue
-                                </a>
-
-                                @foreach ($navCategories as $navCategory)
-                                    <div class="border-t border-brand-ink/10 mt-1 pt-1">
-                                        <a
-                                            href="{{ route('shop.category', $navCategory['slug']) }}"
-                                            class="block px-4 py-2 text-sm text-brand-ink hover:bg-brand-surface"
-                                        >
-                                            {{ $navCategory['name'] }}
-                                        </a>
-
+                                    <div
+                                        x-show="open"
+                                        x-cloak
+                                        x-transition
+                                        class="absolute left-0 top-full w-56 bg-white border border-brand-ink/10 shadow-lg normal-case tracking-normal py-2 z-40"
+                                    >
                                         @foreach ($navCategory['children'] as $child)
                                             <a
                                                 href="{{ route('shop.category', $child['slug']) }}"
-                                                class="block pl-8 pr-4 py-1.5 text-sm text-brand-ink/70 hover:bg-brand-surface hover:text-brand-ink"
+                                                class="block px-4 py-2 text-sm text-brand-ink/80 hover:bg-brand-parchment hover:text-brand-ink"
                                             >
                                                 {{ $child['name'] }}
                                             </a>
                                         @endforeach
                                     </div>
-                                @endforeach
-                            </div>
-                        </div>
+                                </div>
+                            @else
+                                <a href="{{ route('shop.category', $navCategory['slug']) }}" class="text-current opacity-80 hover:opacity-100 border-b border-transparent hover:border-brand-accent pb-1 transition">
+                                    {{ $navCategory['name'] }}
+                                </a>
+                            @endif
+                        @endforeach
 
-                        <a href="{{ route('shop.about') }}" class="text-current opacity-80 hover:opacity-100 border-b border-transparent hover:border-brand-signature pb-1 transition">
-                            À propos
-                        </a>
-                        <a href="{{ route('shop.contact') }}" class="text-current opacity-80 hover:opacity-100 border-b border-transparent hover:border-brand-signature pb-1 transition">
-                            Contact
-                        </a>
+                        {{-- Les entrées « Collections » et « Journal » de la maquette
+                             arrivent en Phase 2.2 avec les modules correspondants :
+                             on ne livre pas de lien mort en attendant.
+                             Voir docs/files/02.2-modules-maquette.md --}}
                     </nav>
 
-                    <div class="flex items-center gap-3 sm:gap-5 text-sm">
-                        @auth
-                            <a href="{{ route('dashboard') }}" class="hidden md:inline-block text-current opacity-80 hover:opacity-100">Mon compte</a>
-                        @else
-                            <a href="{{ route('login') }}" class="hidden md:inline-block text-current opacity-80 hover:opacity-100">Connexion</a>
-                        @endauth
+                    {{-- Colonne de gauche sur mobile : le burger, pour que la
+                         signature reste centrée sur tous les écrans. --}}
+                    <button
+                        type="button"
+                        class="lg:hidden p-2 -ml-2 justify-self-start"
+                        @click="mobileNavOpen = !mobileNavOpen"
+                        aria-label="Ouvrir le menu"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+
+                    <a href="{{ route('home') }}" class="justify-self-center text-center leading-none">
+                        <span class="block font-display text-lg sm:text-xl tracking-[0.15em] whitespace-nowrap">AISSATOU</span>
+                        <span class="block text-[0.55rem] uppercase tracking-[0.4em] opacity-70">Store</span>
+                    </a>
+
+                    <div class="flex items-center justify-self-end gap-4 sm:gap-5">
+                        {{-- Recherche : la maquette montre une loupe ; le champ vit
+                             sur le catalogue depuis la sous-étape 3, on y renvoie. --}}
+                        <a href="{{ route('shop.index') }}#recherche" class="text-current opacity-80 hover:opacity-100" aria-label="Rechercher">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                            </svg>
+                        </a>
+
+                        <a href="{{ auth()->check() ? route('dashboard') : route('login') }}" class="hidden sm:inline-block text-current opacity-80 hover:opacity-100" aria-label="{{ auth()->check() ? 'Mon compte' : 'Se connecter' }}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                            </svg>
+                        </a>
+
+                        {{-- L'icône « liste d'envies » de la maquette arrive en Phase 2.2. --}}
 
                         <button type="button" @click="cartOpen = true" class="relative text-current opacity-80 hover:opacity-100" aria-label="Ouvrir le panier">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z" />
                             </svg>
                             @if ($cartItemCount > 0)
-                                <span class="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-brand-accent text-[10px] font-medium text-brand-surface">{{ $cartItemCount }}</span>
+                                <span class="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center bg-brand-accent text-[10px] font-medium text-brand-surface">{{ $cartItemCount }}</span>
                             @endif
-                        </button>
-
-                        <button
-                            type="button"
-                            class="md:hidden p-2 -mr-2"
-                            @click="mobileNavOpen = !mobileNavOpen"
-                            aria-label="Ouvrir le menu"
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-                            </svg>
                         </button>
                     </div>
                 </div>
 
                 <nav
-                    class="md:hidden pb-4 flex flex-col gap-3 text-sm uppercase tracking-wide"
+                    class="lg:hidden pb-4 flex flex-col gap-3 text-sm uppercase tracking-wide"
                     x-show="mobileNavOpen"
                     x-transition.opacity.duration.200ms
                     x-cloak

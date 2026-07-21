@@ -33,7 +33,7 @@
                     <p class="text-sm mt-2 text-brand-ink/70">
                         Votre adresse email n'est pas vérifiée.
 
-                        <button form="send-verification" class="underline text-sm text-brand-muted hover:text-brand-ink rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-accent">
+                        <button form="send-verification" class="underline text-sm text-brand-muted hover:text-brand-ink rounded-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-accent">
                             Cliquez ici pour renvoyer l'email de vérification.
                         </button>
                     </p>

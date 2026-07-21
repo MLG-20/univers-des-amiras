@@ -1,6 +1,6 @@
 @props(['review'])
 
-<div class="flex h-full flex-col gap-4 rounded-2xl border border-brand-ink/10 bg-white/60 p-6 whitespace-normal">
+<div class="flex h-full flex-col gap-4 rounded-sm border border-brand-ink/10 bg-white/60 p-6 whitespace-normal">
     @if ($review->rating)
         <div class="flex gap-0.5 text-brand-signature">
             @for ($i = 1; $i <= 5; $i++)

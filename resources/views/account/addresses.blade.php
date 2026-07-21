@@ -17,14 +17,14 @@
                 @endif
 
                 @forelse ($addresses as $address)
-                    <div class="p-5 mb-4 bg-white border {{ $address->is_default ? 'border-brand-signature/40' : 'border-brand-ink/10' }} rounded-2xl transition hover:shadow-md hover:border-brand-signature/40" x-data="{ editing: false }">
+                    <div class="p-5 mb-4 bg-white border {{ $address->is_default ? 'border-brand-signature/40' : 'border-brand-ink/10' }} rounded-sm transition hover:shadow-md hover:border-brand-signature/40" x-data="{ editing: false }">
                         <div x-show="!editing">
                             <div class="flex items-start justify-between gap-4">
                                 <div>
                                     <p class="font-medium text-brand-ink">
                                         {{ $address->recipient_name }}
                                         @if ($address->is_default)
-                                            <span class="ml-2 text-xs uppercase tracking-wide text-brand-signature border border-brand-signature rounded-md px-2 py-0.5">Par défaut</span>
+                                            <span class="ml-2 text-xs uppercase tracking-wide text-brand-signature border border-brand-signature rounded-sm px-2 py-0.5">Par défaut</span>
                                         @endif
                                     </p>
                                     <p class="text-sm text-brand-ink/80 mt-1">{{ $address->phone }}</p>
@@ -60,7 +60,7 @@
                         </form>
                     </div>
                 @empty
-                    <div class="rounded-2xl border border-dashed border-brand-ink/20 p-8 text-center text-sm text-brand-muted">
+                    <div class="rounded-sm border border-dashed border-brand-ink/20 p-8 text-center text-sm text-brand-muted">
                         Vous n'avez pas encore enregistré d'adresse.<br>
                         Ajoutez-en une pour accélérer vos prochaines commandes.
                     </div>
@@ -70,7 +70,7 @@
             <div>
                 <h2 class="text-lg font-medium text-brand-ink mb-4">Ajouter une adresse</h2>
 
-                <form method="post" action="{{ route('account.addresses.store') }}" class="p-6 bg-white border border-brand-ink/10 rounded-2xl space-y-4">
+                <form method="post" action="{{ route('account.addresses.store') }}" class="p-6 bg-white border border-brand-ink/10 rounded-sm space-y-4">
                     @csrf
                     @include('account.partials.address-fields')
 

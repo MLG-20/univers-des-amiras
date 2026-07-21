@@ -2,15 +2,16 @@
     {{--
         Hero : carrousel géré depuis l'admin (Filament > Contenu du site >
         Hero). Chaque slide a son image, son titre, son sous-titre et son
-        bouton propres. Si aucune slide n'est configurée, on retombe sur un
-        contenu par défaut en traitement "bandeau signature" (ébène + or) —
-        le site n'est jamais vide avant le premier réglage en admin.
+        bouton propres. Si aucune slide n'est configurée, on retombe sur la
+        promesse de marque du rapport d'identité — le site n'est jamais vide
+        avant le premier réglage en admin.
     --}}
     @php
         $defaultSlide = [
             'image' => null,
-            'title' => "L'élégance voilée, pensée pour vous",
-            'subtitle' => 'Voiles, parfums et accessoires choisis avec soin, pour une élégance moderne et raffinée.',
+            // Promesse officielle de la marque (rapport d'identité p.2).
+            'title' => "L'élégance dans la pudeur",
+            'subtitle' => 'Une sélection de hijabs, foulards, accessoires et parfums pensée pour accompagner chaque silhouette avec distinction.',
             'cta_label' => 'Découvrir la collection',
             'cta_url' => route('shop.index'),
         ];
@@ -26,21 +27,21 @@
                 <div class="absolute inset-0 opacity-25 bg-[radial-gradient(circle_at_15%_15%,rgba(74,24,51,0.6),transparent_60%)]"></div>
                 <div class="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_85%_85%,rgba(74,24,51,0.5),transparent_55%)]"></div>
 
-                <div class="relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-center items-start gap-6">
-                    <span class="text-xs uppercase tracking-[0.3em] text-brand-sage">Depuis Dakar</span>
-                    <h1 class="font-display text-4xl sm:text-6xl leading-[1.1] max-w-2xl">{{ $defaultSlide['title'] }}</h1>
-                    <p class="text-brand-surface/70 max-w-md text-base sm:text-lg">{{ $defaultSlide['subtitle'] }}</p>
+                <div class="relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-center items-start gap-6 py-24">
+                    <span class="text-[0.65rem] uppercase tracking-[0.4em] text-brand-surface/60">Aissatou Store</span>
+                    <h1 class="font-display text-4xl sm:text-6xl lg:text-7xl leading-[1.05] max-w-3xl">{{ $defaultSlide['title'] }}</h1>
+                    <p class="text-brand-surface/70 max-w-lg text-base sm:text-lg">{{ $defaultSlide['subtitle'] }}</p>
 
-                    <div class="flex flex-wrap gap-4 mt-2">
-                        <a href="{{ $defaultSlide['cta_url'] }}" class="inline-block border border-brand-signature px-8 py-3 text-sm uppercase tracking-wide hover:bg-brand-accent hover:text-brand-surface transition">
+                    {{-- Un seul CTA Garance (règle du rapport p.13) ; le second reste
+                         en contour. --}}
+                    <div class="flex flex-wrap gap-3 mt-2">
+                        <x-shop.cta :href="$defaultSlide['cta_url']" variant="primary">
                             {{ $defaultSlide['cta_label'] }}
-                        </a>
+                        </x-shop.cta>
 
-                        @if ($collections->isNotEmpty())
-                            <a href="{{ route('shop.category', $collections->first()->slug) }}" class="inline-block border border-brand-surface/30 px-8 py-3 text-sm uppercase tracking-wide hover:border-brand-surface transition">
-                                {{ $collections->first()->name }}
-                            </a>
-                        @endif
+                        <x-shop.cta :href="route('shop.index')" on-dark>
+                            Explorer les nouveautés
+                        </x-shop.cta>
                     </div>
                 </div>
             </div>
@@ -59,22 +60,25 @@
                         <div class="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_85%_85%,rgba(74,24,51,0.5),transparent_55%)]"></div>
                     @endunless
 
-                    <div class="relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-center items-start gap-6">
-                        <span class="text-xs uppercase tracking-[0.3em] text-brand-sage">Depuis Dakar</span>
-                        <h1 class="font-display text-4xl sm:text-6xl leading-[1.1] max-w-2xl">{{ $slide->title }}</h1>
+                    <div class="relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-center items-start gap-6 py-24">
+                        <span class="text-[0.65rem] uppercase tracking-[0.4em] text-brand-surface/60">Aissatou Store</span>
+                        <h1 class="font-display text-4xl sm:text-6xl lg:text-7xl leading-[1.05] max-w-3xl">{{ $slide->title }}</h1>
 
                         @if ($slide->subtitle)
-                            <p class="text-brand-surface/70 max-w-md text-base sm:text-lg">{{ $slide->subtitle }}</p>
+                            <p class="text-brand-surface/70 max-w-lg text-base sm:text-lg">{{ $slide->subtitle }}</p>
                         @endif
 
-                        @if ($slide->cta_label)
-                            <a
-                                href="{{ $slide->cta_url ?: route('shop.index') }}"
-                                class="inline-block border border-brand-signature px-8 py-3 text-sm uppercase tracking-wide hover:bg-brand-accent hover:text-brand-surface transition mt-2"
-                            >
-                                {{ $slide->cta_label }}
-                            </a>
-                        @endif
+                        <div class="flex flex-wrap gap-3 mt-2">
+                            @if ($slide->cta_label)
+                                <x-shop.cta :href="$slide->cta_url ?: route('shop.index')" variant="primary">
+                                    {{ $slide->cta_label }}
+                                </x-shop.cta>
+                            @endif
+
+                            <x-shop.cta :href="route('shop.index')" on-dark>
+                                Explorer les nouveautés
+                            </x-shop.cta>
+                        </div>
                     </div>
                 </div>
             @endforeach
@@ -104,7 +108,7 @@
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-6">
                 @foreach ($collections as $collection)
                     <a href="{{ route('shop.category', $collection->slug) }}" class="group block">
-                        <div class="aspect-[4/5] w-full overflow-hidden rounded-md border border-brand-ink/10 group-hover:border-brand-signature transition">
+                        <div class="aspect-[4/5] w-full overflow-hidden rounded-sm border border-brand-ink/10 group-hover:border-brand-signature transition">
                             <x-shop.image-placeholder :category="$collection" :image="$collection->sizedUrl('medium')" />
                         </div>
 
@@ -178,7 +182,7 @@
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
                     @foreach ($settings->trust_items as $index => $text)
                         <div
-                            class="trust-card group relative flex flex-col items-center text-center gap-5 rounded-2xl border border-brand-ink/10 bg-white/50 backdrop-blur-sm px-6 py-12 transition duration-500 hover:-translate-y-2 hover:shadow-2xl"
+                            class="trust-card group relative flex flex-col items-center text-center gap-5 rounded-sm border border-brand-ink/10 bg-white/50 backdrop-blur-sm px-6 py-12 transition duration-500 hover:-translate-y-2 hover:shadow-2xl"
                             style="opacity:0; transform:translateY(2rem); transition: opacity .7s ease, transform .7s ease, box-shadow .5s ease, border-color .5s ease; transition-delay: {{ $index * 140 }}ms;"
                             :style="shown && 'opacity:1; transform:translateY(0)'"
                         >
@@ -222,7 +226,7 @@
             </div>
 
             @if (session('status') === 'review-submitted')
-                <p class="mt-8 flex items-center gap-2 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
+                <p class="mt-8 flex items-center gap-2 rounded-sm border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
                     <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
@@ -233,7 +237,7 @@
             <form
                 method="post"
                 action="{{ route('shop.reviews.store') }}"
-                class="mt-10 space-y-6 rounded-3xl border border-brand-ink/10 bg-white/70 backdrop-blur-sm p-6 sm:p-10 shadow-sm"
+                class="mt-10 space-y-6 rounded-sm border border-brand-ink/10 bg-white/70 backdrop-blur-sm p-6 sm:p-10 shadow-sm"
                 style="transition: opacity .8s ease .15s, transform .8s ease .15s;"
                 :style="shown ? 'opacity:1; transform:translateY(0)' : 'opacity:0; transform:translateY(2rem)'"
             >
@@ -282,7 +286,7 @@
                     <textarea
                         id="comment" name="comment" rows="4" required maxlength="600"
                         @input="count = $event.target.value.length"
-                        class="mt-1 block w-full rounded-xl border-brand-ink/20 text-sm transition focus:border-brand-signature focus:ring-brand-accent"
+                        class="mt-1 block w-full rounded-sm border-brand-ink/20 text-sm transition focus:border-brand-signature focus:ring-brand-accent"
                     >{{ old('comment') }}</textarea>
                     <div class="mt-1 flex items-center justify-between">
                         <x-input-error :messages="$errors->get('comment')" />
@@ -292,7 +296,7 @@
 
                 <button
                     type="submit"
-                    class="group inline-flex items-center gap-2 rounded-full bg-brand-ink px-8 py-3 text-sm font-medium uppercase tracking-wide text-brand-surface transition-all duration-300 hover:bg-brand-accent hover:text-brand-surface hover:shadow-lg"
+                    class="group inline-flex items-center gap-2 rounded-sm bg-brand-ink px-8 py-3 text-sm font-medium uppercase tracking-wide text-brand-surface transition-all duration-300 hover:bg-brand-accent hover:text-brand-surface hover:shadow-lg"
                 >
                     <span>Envoyer mon avis</span>
                     <svg class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

@@ -32,7 +32,7 @@
                 @foreach ($category->children as $child)
                     <a
                         href="{{ route('shop.category', $child) }}"
-                        class="text-sm px-3 py-1.5 rounded-full border border-brand-ink/20 hover:border-brand-signature"
+                        class="text-sm px-3 py-1.5 rounded-sm border border-brand-ink/20 hover:border-brand-signature"
                     >
                         {{ $child->name }}
                     </a>

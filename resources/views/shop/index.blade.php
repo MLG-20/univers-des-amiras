@@ -1,9 +1,11 @@
 <x-shop-layout :title="'Catalogue — '.config('app.name')">
-    <section class="w-full bg-gradient-to-br from-brand-parchment via-brand-surface to-brand-muted/20 border-b border-brand-ink/10 py-14 sm:py-20">
+    {{-- Bandeau de tête en Parchemin plein, sans dégradé : le rapport réserve la
+         respiration au fond et proscrit les ornements décoratifs (p.9). --}}
+    <section class="w-full bg-brand-parchment border-b border-brand-ink/10 py-14 sm:py-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <span class="text-xs uppercase tracking-[0.2em] text-brand-signature">Boutique</span>
-            <h1 class="font-display text-4xl sm:text-5xl text-brand-ink mt-1">Tout le catalogue</h1>
-            <p class="mt-3 text-brand-muted max-w-xl">Voiles, parfums, sacs et accessoires — une sélection choisie avec soin.</p>
+            <span class="text-[0.65rem] uppercase tracking-[0.25em] text-brand-signature">La sélection</span>
+            <h1 class="font-display text-4xl sm:text-5xl text-brand-ink mt-2">Tout le catalogue</h1>
+            <p class="mt-3 text-brand-muted max-w-xl">Hijabs, foulards, cols, parfums et objets à offrir — moins d'objets, mieux choisis.</p>
         </div>
     </section>
 

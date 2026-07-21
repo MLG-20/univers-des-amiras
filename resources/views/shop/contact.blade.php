@@ -37,7 +37,7 @@
                         name="message"
                         rows="5"
                         required
-                        class="mt-1 block w-full rounded-md border-brand-ink/20 focus:border-brand-signature focus:ring-brand-accent text-sm"
+                        class="mt-1 block w-full rounded-sm border-brand-ink/20 focus:border-brand-signature focus:ring-brand-accent text-sm"
                     >{{ old('message') }}</textarea>
                     <x-input-error class="mt-2" :messages="$errors->get('message')" />
                 </div>

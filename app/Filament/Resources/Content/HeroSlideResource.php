@@ -112,7 +112,7 @@ class HeroSlideResource extends Resource
                 TextInput::make('cta_url')
                     ->label('Lien du bouton')
                     ->maxLength(255)
-                    ->helperText('Ex. : /catalogue ou /categories/voiles-hijabs'),
+                    ->helperText('Ex. : /catalogue ou /categories/hijabs'),
 
                 TextInput::make('position')
                     ->label("Ordre d'affichage")

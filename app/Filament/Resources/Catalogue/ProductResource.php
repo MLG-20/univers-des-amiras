@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Catalogue;
 
+use App\Enums\Catalogue\ProductLabel;
 use App\Filament\Resources\Catalogue\ProductResource\Pages;
 use App\Models\Catalogue\Category;
 use App\Models\Catalogue\Product;
@@ -77,6 +78,12 @@ class ProductResource extends Resource
                     ->numeric()
                     ->required()
                     ->minValue(0),
+
+                Select::make('label')
+                    ->label('Signal commercial')
+                    ->options(ProductLabel::options())
+                    ->helperText("À réserver aux produits dont ce signal change vraiment la décision d'achat. S'il est mis partout, il ne veut plus rien dire.")
+                    ->placeholder('Aucun'),
 
                 Toggle::make('is_active')
                     ->label('Visible sur le site')

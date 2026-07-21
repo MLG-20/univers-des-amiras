@@ -2,6 +2,7 @@
 
 namespace App\Models\Catalogue;
 
+use App\Enums\Catalogue\ProductLabel;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
-#[Fillable(['category_id', 'name', 'slug', 'sku', 'description', 'price', 'is_active'])]
+#[Fillable(['category_id', 'name', 'slug', 'sku', 'description', 'price', 'label', 'is_active'])]
 class Product extends Model
 {
     use HasFactory, SoftDeletes;
@@ -20,6 +21,7 @@ class Product extends Model
     {
         return [
             'price' => 'decimal:2',
+            'label' => ProductLabel::class,
             'is_active' => 'boolean',
         ];
     }

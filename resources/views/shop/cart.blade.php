@@ -3,7 +3,7 @@
         <h1 class="font-display text-3xl mb-6">Votre panier</h1>
 
         @if (session('status'))
-            <p class="mb-6 text-sm text-brand-ink bg-brand-parchment border border-brand-signature/40 px-4 py-3 rounded-md">
+            <p class="mb-6 text-sm text-brand-ink bg-brand-parchment border border-brand-signature/40 px-4 py-3 rounded-sm">
                 {{ session('status') }}
             </p>
         @endif
@@ -26,7 +26,7 @@
                             ->implode(', ');
                     @endphp
                     <div class="py-5 flex items-center gap-4">
-                        <div class="w-20 h-20 flex-shrink-0 rounded-md overflow-hidden bg-brand-parchment">
+                        <div class="w-20 h-20 flex-shrink-0 rounded-sm overflow-hidden bg-brand-parchment">
                             @if ($image = $item->product->primaryImage())
                                 <img
                                     src="{{ $image->sizedUrl('thumb') }}"
@@ -65,7 +65,7 @@
                                 value="{{ $item->quantity }}"
                                 min="0"
                                 max="50"
-                                class="w-16 rounded-md border border-brand-ink/20 focus:border-brand-signature focus:ring-brand-accent text-sm"
+                                class="w-16 rounded-sm border border-brand-ink/20 focus:border-brand-signature focus:ring-brand-accent text-sm"
                             >
                             <button type="submit" class="text-xs uppercase tracking-wide underline hover:text-brand-signature">
                                 Mettre à jour

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\Catalogue\ProductLabel;
 use App\Models\Catalogue\Category;
 use App\Models\Catalogue\Product;
 use App\Models\Catalogue\ProductVariant;
@@ -11,71 +12,89 @@ use Illuminate\Support\Str;
 class CatalogueSeeder extends Seeder
 {
     /**
-     * Données de démonstration réalistes (noms/descriptions en français,
-     * cohérentes avec l'identité de la boutique) plutôt que du texte Faker
-     * générique — un catalogue qui ressemble à une vraie boutique, pas à un
-     * jeu de données de test, est essentiel pour présenter le site à la
-     * cliente. Les vraies fiches produit (photos, textes définitifs) restent
-     * à saisir par la cliente une fois le back-office livré ; ceci n'est
-     * qu'un jeu de démonstration cohérent en attendant.
+     * Données de démonstration alignées sur la maquette Aissatou Store
+     * (rapport d'identité p.3 pour l'arborescence, p.11-12 pour les produits).
+     *
+     * L'arborescence est volontairement plate : le rapport présente les cinq
+     * univers au même niveau, sans sous-catégories. Les axes transverses
+     * (matière, collection) arriveront en Phase 2.2 sous forme de filtres et
+     * non de catégories — c'est ce qui permet à un même produit d'appartenir à
+     * « Soie » et à « Atelier Nocturne » sans dupliquer l'arbre.
+     *
+     * Les vraies fiches (photos, textes et prix définitifs) restent à saisir
+     * par la cliente : ceci n'est qu'un jeu de démonstration cohérent.
      */
     public function run(): void
     {
-        $voiles = Category::factory()->create([
-            'name' => 'Voiles & Hijabs',
-            'slug' => 'voiles-hijabs',
-            'description' => 'Voiles, hijabs et turbans pour toutes les occasions.',
+        $hijabs = Category::factory()->create([
+            'name' => 'Hijabs',
+            'slug' => 'hijabs',
+            'description' => 'Le geste quotidien : des hijabs choisis pour leur tombé et leur confort.',
             'position' => 1,
         ]);
 
-        $voilesEnSoie = Category::factory()->create([
-            'name' => 'Voiles en soie',
-            'slug' => 'voiles-en-soie',
-            'description' => 'Une matière noble pour un tombé impeccable.',
-            'parent_id' => $voiles->id,
-            'position' => 1,
+        $foulards = Category::factory()->create([
+            'name' => 'Foulards',
+            'slug' => 'foulards',
+            'description' => 'La matière et le mouvement, en soie, en modal ou en laine.',
+            'position' => 2,
+        ]);
+
+        $cols = Category::factory()->create([
+            'name' => 'Cols',
+            'slug' => 'cols',
+            'description' => 'La structure de silhouette : des cols qui achèvent une tenue.',
+            'position' => 3,
         ]);
 
         $parfums = Category::factory()->create([
             'name' => 'Parfums',
             'slug' => 'parfums',
-            'description' => 'Des fragrances raffinées, entre tradition et modernité.',
-            'position' => 2,
+            'description' => 'La trace olfactive, entre tradition et modernité.',
+            'position' => 4,
         ]);
 
-        $sacs = Category::factory()->create([
-            'name' => 'Sacs à main',
-            'slug' => 'sacs-a-main',
-            'description' => 'Des sacs élégants pour accompagner chaque tenue.',
-            'position' => 3,
+        $cadeaux = Category::factory()->create([
+            'name' => 'Cadeaux',
+            'slug' => 'cadeaux',
+            'description' => "L'art d'offrir : des objets choisis, présentés avec soin.",
+            'position' => 5,
         ]);
 
-        $this->seedProducts($voiles, [
-            ['name' => 'Hijab Jersey Ivoire', 'description' => 'Un hijab en jersey extensible, doux et facile à draper, pour un maintien parfait toute la journée.', 'price' => 8000],
-            ['name' => 'Voile Mousseline Bordeaux', 'description' => 'Voile léger en mousseline, idéal pour les journées chaudes, drapé fluide et élégant.', 'price' => 6500],
-            ['name' => 'Turban Croisé Doré', 'description' => 'Turban prêt-à-porter avec bande croisée à liseré doré, pour un style affirmé sans effort.', 'price' => 5000],
-        ], 'voile');
+        // Les noms proviennent directement des maquettes p.11-12. Les prix sont
+        // ceux des maquettes convertis à ~656 FCFA/EUR — à faire confirmer par
+        // la cliente, qui seule fixe sa grille tarifaire.
+        $this->seedProducts($hijabs, [
+            ['name' => 'Hijab Soie Sable', 'description' => 'Soie naturelle au tombé fluide et à la brillance discrète, pour les grandes occasions.', 'price' => 44000, 'label' => ProductLabel::Selected],
+            ['name' => 'Hijab Modal Cassis', 'description' => 'Modal souple, tombé fluide et maintien fiable tout au long de la journée.', 'price' => 27500],
+            ['name' => 'Hijab Jersey Ivoire', 'description' => 'Jersey extensible, doux et facile à draper, le compagnon du quotidien.', 'price' => 16000],
+        ], 'couleur');
 
-        $this->seedProducts($voilesEnSoie, [
-            ['name' => 'Voile Soie Naturelle Beige', 'description' => 'Voile en soie naturelle, tombé fluide et brillance délicate, pour les grandes occasions.', 'price' => 15000],
-            ['name' => 'Foulard Soie Imprimé Or', 'description' => 'Foulard en soie à motifs dorés délicats, une touche de raffinement au quotidien.', 'price' => 13000],
-        ], 'voile');
+        $this->seedProducts($foulards, [
+            ['name' => 'Foulard Atelier Nocturne', 'description' => "Pièce d'édition en soie, motif dérivé du pli textile de la maison.", 'price' => 62000, 'label' => ProductLabel::LimitedEdition],
+            ['name' => 'Foulard Sauge Fumée', 'description' => 'Un vert doux et minéral, en modal léger, qui accompagne sans surcharger.', 'price' => 49000],
+            ['name' => "Étole d'Hiver Encre", 'description' => 'Laine et cachemire, largeur généreuse et chaleur immédiate.', 'price' => 72000, 'label' => ProductLabel::New],
+        ], 'couleur');
+
+        $this->seedProducts($cols, [
+            ['name' => 'Col Cachemire Parchemin', 'description' => "Col court en cachemire, pensé pour structurer une silhouette sans l'alourdir.", 'price' => 38000],
+            ['name' => 'Col Coton Encre', 'description' => 'Coton dense et mat, une base sobre qui se porte toute l\'année.', 'price' => 21000],
+        ], 'couleur');
 
         $this->seedProducts($parfums, [
-            ['name' => 'Eau de Parfum Ambre Doré', 'description' => 'Notes chaudes d\'ambre et de vanille, un sillage enveloppant qui persiste toute la journée.', 'price' => 25000],
-            ['name' => 'Musc Blanc Intense', 'description' => 'Un musc blanc pur et délicat, pour une signature olfactive discrète et raffinée.', 'price' => 18000],
-            ['name' => 'Parfum Oud Royal', 'description' => 'Un oud intense et boisé, pour celles qui aiment les fragrances de caractère.', 'price' => 32000],
-        ], 'parfum');
+            ['name' => 'Brume Textile Cassis', 'description' => 'Brume à vaporiser sur le tissu, sillage fruité et boisé qui tient sur la matière.', 'price' => 31500],
+            ['name' => 'Eau de Parfum Ambre Doré', 'description' => "Notes chaudes d'ambre et de vanille, un sillage enveloppant qui persiste.", 'price' => 25000],
+            ['name' => 'Musc Blanc Intense', 'description' => 'Un musc blanc pur et délicat, pour une signature olfactive discrète.', 'price' => 18000],
+        ], 'contenance');
 
-        $this->seedProducts($sacs, [
-            ['name' => 'Sac Bandoulière Cuir Beige', 'description' => 'Sac bandoulière en cuir souple, format pratique pour le quotidien, finitions soignées.', 'price' => 22000],
-            ['name' => 'Pochette Soirée Dorée', 'description' => 'Pochette compacte à fermoir doré, parfaite pour accompagner une tenue de soirée.', 'price' => 14000],
-            ['name' => 'Sac Cabas Tissé Bordeaux', 'description' => 'Grand cabas tissé, spacieux et résistant, pour toutes les journées bien remplies.', 'price' => 19000],
-        ], 'sac');
+        $this->seedProducts($cadeaux, [
+            ['name' => 'Broche Rouge Garance', 'description' => "Broche émaillée reprenant l'incision de sélection du signe de la maison.", 'price' => 19000, 'label' => ProductLabel::Selected],
+            ['name' => 'Coffret Foulard Signature', 'description' => 'Un foulard présenté dans le coffret cassis de la maison, prêt à offrir.', 'price' => 68000],
+        ], 'couleur');
     }
 
     /**
-     * @param  array<int, array{name: string, description: string, price: int}>  $products
+     * @param  array<int, array{name: string, description: string, price: int, label?: ProductLabel}>  $products
      */
     private function seedProducts(Category $category, array $products, string $variantType): void
     {
@@ -85,16 +104,19 @@ class CatalogueSeeder extends Seeder
                 'slug' => Str::slug($data['name']),
                 'description' => $data['description'],
                 'price' => $data['price'],
+                'label' => $data['label'] ?? null,
             ]);
 
+            // Les déclinaisons suivent la nature du produit : une contenance pour
+            // un parfum, une couleur pour du textile.
             $variants = match ($variantType) {
-                'parfum' => array_map(
+                'contenance' => array_map(
                     fn (string $contenance) => ['contenance' => $contenance],
                     ['30 ml', '50 ml', '100 ml']
                 ),
                 default => array_map(
                     fn (string $couleur) => ['couleur' => $couleur],
-                    ['Ivoire', 'Bordeaux', 'Doré']
+                    ['Parchemin', 'Cassis', 'Encre']
                 ),
             };
 

@@ -34,15 +34,17 @@ class SiteSetting extends Model
                 'Une livraison préparée avec soin, rien que pour vous',
                 'Une conseillère à votre écoute, comme une amie',
             ],
-            'about_story' => "Aissatou Store est né d'une conviction simple : la mode voilée mérite des pièces choisies avec la même exigence que n'importe quel univers de mode. Voiles, hijabs, parfums et accessoires sont sélectionnés un à un, pour leur qualité autant que pour l'élégance qu'ils apportent au quotidien.\n\nChaque pièce est pensée pour accompagner une femme moderne, fière de son identité, qui ne veut choisir ni entre pudeur et style, ni entre tradition et modernité.",
-            'about_quote' => "L'élégance ne se choisit pas, elle se porte avec soi.",
+            // Textes par défaut repris du positionnement officiel de la marque
+            // (rapport d'identité p.2). Éditables depuis Filament.
+            'about_story' => "Aissatou Store sélectionne des hijabs, foulards, cols, parfums et objets à offrir qui accompagnent la silhouette sans la surcharger. La valeur de la marque ne repose pas sur l'abondance, mais sur le discernement : moins d'objets, mieux choisis, mieux présentés.\n\nChaque pièce est pensée pour une femme attentive à la qualité, au tombé et à la cohérence — une élégance portable, faite d'objets choisis plutôt que d'une accumulation de références.",
+            'about_quote' => 'Sélectionner, c\'est donner du sens.',
             'about_values' => [
-                ['title' => 'Qualité', 'text' => 'Des matières et finitions choisies avec exigence.'],
-                ['title' => 'Authenticité', 'text' => 'Une identité assumée, sans compromis.'],
-                ['title' => 'Proximité', 'text' => 'Une relation directe et à l\'écoute de chaque cliente.'],
+                ['title' => 'Pudeur', 'text' => 'Une élégance mesurée, pensée pour accompagner plutôt que démontrer.'],
+                ['title' => 'Choix', 'text' => 'La sélection devient un service et un signe de confiance.'],
+                ['title' => 'Trace', 'text' => 'Chaque objet laisse une présence discrète et mémorable.'],
             ],
             'contact_whatsapp' => '+221 XX XXX XX XX',
-            'contact_email' => 'contact@amiras.test',
+            'contact_email' => 'contact@aissatoustore.test',
             'contact_address' => 'Dakar, Sénégal',
             'contact_hours' => 'Nous répondons du lundi au samedi. Les zones et délais de livraison vous sont précisés directement lors de la commande.',
             'footer_tagline' => "L'élégance voilée, pensée pour vous.",

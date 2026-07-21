@@ -49,7 +49,7 @@
                 </div>
                 <p class="text-brand-ink">Votre panier est vide.</p>
                 <p class="max-w-xs text-sm text-brand-muted">Laissez-vous inspirer par nos collections.</p>
-                <a href="{{ route('shop.index') }}" class="mt-2 rounded-full bg-brand-ink px-6 py-3 text-sm uppercase tracking-wide text-brand-surface transition hover:bg-brand-accent hover:text-brand-surface">
+                <a href="{{ route('shop.index') }}" class="mt-2 rounded-sm bg-brand-ink px-6 py-3 text-sm uppercase tracking-wide text-brand-surface transition hover:bg-brand-accent hover:text-brand-surface">
                     Découvrir le catalogue
                 </a>
             </div>
@@ -62,7 +62,7 @@
                             ->implode(', ');
                     @endphp
                     <div class="flex gap-4 py-4">
-                        <a href="{{ route('shop.product', $item->product) }}" class="h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-brand-parchment">
+                        <a href="{{ route('shop.product', $item->product) }}" class="h-20 w-20 shrink-0 overflow-hidden rounded-sm bg-brand-parchment">
                             @if ($image = $item->product->primaryImage())
                                 <img src="{{ $image->sizedUrl('thumb') }}" alt="{{ $item->product->name }}" loading="lazy" class="h-full w-full object-cover object-center">
                             @else
@@ -106,7 +106,7 @@
                     <span class="text-brand-muted">Total</span>
                     <span class="font-display text-xl text-brand-ink">{{ number_format($headerCart->total(), 0, ',', ' ') }} FCFA</span>
                 </div>
-                <a href="{{ route('shop.cart') }}" class="block w-full rounded-full bg-brand-ink py-3 text-center text-sm uppercase tracking-wide text-brand-surface transition hover:bg-brand-accent hover:text-brand-surface">
+                <a href="{{ route('shop.cart') }}" class="block w-full rounded-sm bg-brand-ink py-3 text-center text-sm uppercase tracking-wide text-brand-surface transition hover:bg-brand-accent hover:text-brand-surface">
                     Voir le panier
                 </a>
                 <button type="button" @click="cartOpen = false" class="block w-full text-center text-sm text-brand-muted transition hover:text-brand-ink">

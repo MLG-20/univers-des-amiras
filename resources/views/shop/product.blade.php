@@ -29,7 +29,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
             <div>
                 <div
-                    class="relative aspect-square w-full overflow-hidden rounded-md bg-brand-parchment touch-pan-y"
+                    class="relative aspect-square w-full overflow-hidden rounded-sm bg-brand-parchment touch-pan-y"
                     x-on:touchstart="touchStartX = $event.changedTouches[0].screenX"
                     x-on:touchend="onSwipe($event, {{ $images->count() }})"
                 >
@@ -57,7 +57,7 @@
                             <button
                                 type="button"
                                 @click="activeImage = {{ $index }}"
-                                class="w-16 h-16 flex-shrink-0 rounded-md overflow-hidden border"
+                                class="w-16 h-16 flex-shrink-0 rounded-sm overflow-hidden border"
                                 :class="activeImage === {{ $index }} ? 'border-brand-signature' : 'border-brand-ink/10'"
                             >
                                 <img
@@ -107,7 +107,7 @@
                                 id="variant"
                                 name="variant_id"
                                 required
-                                class="w-full rounded-md border border-brand-ink/20 focus:border-brand-signature focus:ring-brand-accent text-sm"
+                                class="w-full rounded-sm border border-brand-ink/20 focus:border-brand-signature focus:ring-brand-accent text-sm"
                             >
                                 <option value="">— Sélectionner —</option>
                                 @foreach ($variants as $variant)
@@ -135,7 +135,7 @@
                             value="1"
                             min="1"
                             max="50"
-                            class="w-20 rounded-md border border-brand-ink/20 focus:border-brand-signature focus:ring-brand-accent text-sm"
+                            class="w-20 rounded-sm border border-brand-ink/20 focus:border-brand-signature focus:ring-brand-accent text-sm"
                         >
                     </div>
 

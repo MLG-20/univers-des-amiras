@@ -60,7 +60,7 @@
             @foreach ($tiles as $tile)
                 <a
                     href="{{ route($tile['route']) }}"
-                    class="group relative flex items-start gap-4 rounded-2xl border border-brand-ink/10 bg-white p-6 transition duration-300 hover:-translate-y-1 hover:border-brand-signature/40 hover:shadow-xl"
+                    class="group relative flex items-start gap-4 rounded-sm border border-brand-ink/10 bg-white p-6 transition duration-300 hover:-translate-y-1 hover:border-brand-signature/40 hover:shadow-xl"
                 >
                     <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-accent/10 text-brand-signature transition duration-300 group-hover:scale-110 group-hover:bg-brand-accent group-hover:text-brand-surface">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
@@ -83,7 +83,7 @@
         </div>
 
         {{-- Carte profil résumé. --}}
-        <div class="mt-8 flex flex-col gap-4 rounded-2xl border border-brand-ink/10 bg-brand-parchment p-6 sm:flex-row sm:items-center sm:justify-between">
+        <div class="mt-8 flex flex-col gap-4 rounded-sm border border-brand-ink/10 bg-brand-parchment p-6 sm:flex-row sm:items-center sm:justify-between">
             <div class="flex items-center gap-4">
                 <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-brand-ink font-display text-xl text-brand-surface">
                     {{ \Illuminate\Support\Str::upper(\Illuminate\Support\Str::substr($user->name, 0, 1)) }}
@@ -95,7 +95,7 @@
                 </div>
             </div>
 
-            <a href="{{ route('profile.edit') }}" class="inline-flex items-center gap-2 self-start rounded-full border border-brand-ink/20 px-5 py-2 text-sm text-brand-ink transition hover:border-brand-signature hover:text-brand-signature sm:self-auto">
+            <a href="{{ route('profile.edit') }}" class="inline-flex items-center gap-2 self-start rounded-sm border border-brand-ink/20 px-5 py-2 text-sm text-brand-ink transition hover:border-brand-signature hover:text-brand-signature sm:self-auto">
                 Modifier mon profil
             </a>
         </div>
