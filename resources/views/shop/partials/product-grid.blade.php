@@ -7,7 +7,11 @@
         @endforeach
     </div>
 
-    <div class="mt-10">
+    {{-- data-pagination : seuls ces liens sont interceptés en fetch par
+         shop-filters.js. Les liens des cartes produit doivent, eux, naviguer
+         normalement (sinon la fiche produit entière serait injectée dans la
+         grille — header + footer en double). --}}
+    <div class="mt-10" data-pagination>
         {{ $products->links() }}
     </div>
 @endif

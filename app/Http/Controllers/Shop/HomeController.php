@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Catalogue\Category;
 use App\Models\Catalogue\Product;
 use App\Models\Content\HeroSlide;
+use App\Models\Content\Review;
 use App\Models\Content\SiteSetting;
 use Illuminate\View\View;
 
@@ -26,6 +27,11 @@ class HomeController extends Controller
                 ->with(['category', 'images', 'variants' => fn ($query) => $query->active()])
                 ->latest()
                 ->take(8)
+                ->get(),
+            'reviews' => Review::query()
+                ->published()
+                ->orderBy('position')
+                ->latest()
                 ->get(),
         ]);
     }

@@ -54,12 +54,14 @@ class CartTest extends TestCase
     {
         $product = Product::factory()->create();
 
-        $response = $this->post(route('shop.cart.store'), [
+        $response = $this->from(route('shop.product', $product))->post(route('shop.cart.store'), [
             'product_id' => $product->id,
             'quantity' => 2,
         ]);
 
-        $response->assertRedirect(route('shop.cart'));
+        // On reste sur la page courante et le tiroir s'ouvre (flash).
+        $response->assertRedirect(route('shop.product', $product));
+        $response->assertSessionHas('cart_opened', true);
         $this->assertDatabaseHas('cart_items', ['product_id' => $product->id, 'quantity' => 2]);
     }
 

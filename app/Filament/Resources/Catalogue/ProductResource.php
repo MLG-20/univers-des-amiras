@@ -6,13 +6,16 @@ use App\Filament\Resources\Catalogue\ProductResource\Pages;
 use App\Models\Catalogue\Category;
 use App\Models\Catalogue\Product;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\KeyValue;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\EditAction;
@@ -26,6 +29,8 @@ use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 
 class ProductResource extends Resource
@@ -48,6 +53,8 @@ class ProductResource extends Resource
                     ->afterStateUpdated(fn (string $state, callable $set) => $set('slug', Str::slug($state))),
 
                 TextInput::make('slug')
+                    ->label('Adresse de la page (lien)')
+                    ->helperText("Rempli automatiquement à partir du nom : c'est ce qui apparaît dans l'adresse du site (ex. « Turban Croisé Doré » → turban-croise-dore). Les accents et espaces sont retirés pour former une adresse valide — en général, ne pas y toucher.")
                     ->required()
                     ->maxLength(255)
                     ->unique(ignoreRecord: true),
@@ -60,7 +67,8 @@ class ProductResource extends Resource
                     ->required(),
 
                 TextInput::make('sku')
-                    ->label('SKU')
+                    ->label('Référence article')
+                    ->helperText('Code interne unique pour retrouver ce produit (ex. VOI-001). Facultatif.')
                     ->maxLength(255)
                     ->unique(ignoreRecord: true),
 
@@ -71,7 +79,8 @@ class ProductResource extends Resource
                     ->minValue(0),
 
                 Toggle::make('is_active')
-                    ->label('Active')
+                    ->label('Visible sur le site')
+                    ->helperText('Décochez pour retirer le produit de la boutique sans le supprimer.')
                     ->default(true),
 
                 Textarea::make('description')
@@ -82,21 +91,86 @@ class ProductResource extends Resource
                 Repeater::make('images')
                     ->relationship('images')
                     ->label('Images')
+                    // À l'ouverture d'un produit existant : on met de côté le chemin
+                    // de chaque image (existing_path) et on vide le champ d'upload,
+                    // qui devient un bouton « Changer l'image » ouvrant directement le
+                    // sélecteur — même logique que le hero, sans supprimer d'abord.
+                    ->mutateRelationshipDataBeforeFillUsing(function (array $data): array {
+                        $data['existing_path'] = $data['path'] ?? null;
+                        $data['path'] = null;
+
+                        return $data;
+                    })
+                    // À l'enregistrement d'une image existante : champ laissé vide =>
+                    // on restaure l'ancien chemin (image conservée) ; un fichier déposé
+                    // la remplace (et l'observer régénère les variantes webp).
+                    ->mutateRelationshipDataBeforeSaveUsing(function (array $data): array {
+                        if (blank($data['path'] ?? null)) {
+                            $data['path'] = $data['existing_path'] ?? null;
+                        }
+                        unset($data['existing_path']);
+
+                        return $data;
+                    })
+                    ->mutateRelationshipDataBeforeCreateUsing(function (array $data): array {
+                        unset($data['existing_path']);
+
+                        return $data;
+                    })
                     ->schema([
+                        Hidden::make('existing_path'),
+
+                        // Aperçu de l'image actuelle de cette ligne (édition uniquement).
+                        Placeholder::make('current_image')
+                            ->label('Image actuelle')
+                            ->content(function (Get $get): HtmlString {
+                                $path = $get('existing_path');
+
+                                if (! $path) {
+                                    return new HtmlString('<span style="color:#6b7280;">Nouvelle image à ajouter.</span>');
+                                }
+
+                                $url = Storage::disk('public')->url($path);
+
+                                return new HtmlString(
+                                    '<img src="'.e($url).'" alt="Image actuelle" '
+                                    .'style="max-width:100%;max-height:160px;border-radius:0.5rem;'
+                                    .'box-shadow:0 1px 3px rgba(0,0,0,.15);object-fit:cover;">'
+                                );
+                            })
+                            ->hidden(fn (Get $get): bool => blank($get('existing_path')))
+                            ->columnSpanFull(),
+
                         // ->image() valide le vrai type MIME côté serveur (pas juste
                         // l'extension), et Filament renomme le fichier au stockage —
                         // c'est ce qui rejette un .php déguisé en .jpg.
                         FileUpload::make('path')
-                            ->label('Image')
+                            ->label(fn (Get $get): string => blank($get('existing_path'))
+                                ? 'Image'
+                                : "Changer l'image")
                             ->image()
                             ->imageEditor()
                             ->disk('public')
                             ->directory('products')
                             ->visibility('public')
                             ->maxSize(15360)
-                            ->required(),
-                        Toggle::make('is_primary')->label('Principale'),
-                        TextInput::make('position')->numeric()->default(0),
+                            // Obligatoire uniquement pour une NOUVELLE image ; sur une
+                            // image existante, laisser vide = conserver l'actuelle.
+                            ->required(fn (Get $get): bool => blank($get('existing_path')))
+                            ->helperText(fn (Get $get): HtmlString => new HtmlString(
+                                (blank($get('existing_path')) ? '' : "Laissez vide pour conserver l'image ci-dessus. ")
+                                .'<strong>Format carré recommandé : 1400 × 1400 px</strong>, fond clair et uni. 15 Mo maximum.'
+                            ))
+                            ->columnSpanFull(),
+
+                        Toggle::make('is_primary')
+                            ->label('Photo principale')
+                            ->helperText('La photo affichée en premier (dans le catalogue).'),
+                        TextInput::make('position')
+                            ->label('Ordre')
+                            ->helperText('Un plus petit nombre apparaît en premier.')
+                            ->numeric()
+                            ->default(0),
                     ])
                     ->columns(3)
                     ->defaultItems(0)
@@ -104,13 +178,31 @@ class ProductResource extends Resource
 
                 Repeater::make('variants')
                     ->relationship('variants')
-                    ->label('Variantes')
+                    ->label('Déclinaisons (tailles, couleurs…)')
+                    ->helperText('Une ligne par variante du produit — par exemple une taille ou une couleur, avec son propre stock.')
                     ->schema([
-                        TextInput::make('sku')->label('SKU')->required()->maxLength(255),
-                        KeyValue::make('attributes')->label('Attributs (ex: taille, couleur)'),
-                        TextInput::make('price_override')->label('Prix spécifique (FCFA)')->numeric(),
-                        TextInput::make('stock')->numeric()->default(0)->required(),
-                        Toggle::make('is_active')->label('Active')->default(true),
+                        TextInput::make('sku')
+                            ->label('Référence de la déclinaison')
+                            ->helperText('Code unique de cette variante (ex. VOI-001-M).')
+                            ->required()
+                            ->maxLength(255),
+                        KeyValue::make('attributes')
+                            ->label('Caractéristiques')
+                            ->keyLabel('Type (ex. Taille)')
+                            ->valueLabel('Valeur (ex. M)'),
+                        TextInput::make('price_override')
+                            ->label('Prix spécifique (FCFA)')
+                            ->helperText('Laissez vide pour utiliser le prix du produit. À remplir seulement si cette déclinaison coûte un prix différent.')
+                            ->numeric(),
+                        TextInput::make('stock')
+                            ->label('Quantité en stock')
+                            ->numeric()
+                            ->default(0)
+                            ->required(),
+                        Toggle::make('is_active')
+                            ->label('Disponible')
+                            ->helperText('Décochez si cette déclinaison n\'est plus vendue.')
+                            ->default(true),
                     ])
                     ->columns(2)
                     ->defaultItems(0)

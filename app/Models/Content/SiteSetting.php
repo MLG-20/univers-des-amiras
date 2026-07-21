@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
     'trust_items', 'about_story', 'about_quote', 'about_values',
     'contact_whatsapp', 'contact_email', 'contact_address', 'contact_hours',
     'footer_tagline', 'social_instagram', 'social_facebook', 'social_tiktok',
+    'auth_title', 'auth_subtitle', 'auth_image_path',
 ])]
 class SiteSetting extends Model
 {
@@ -29,9 +30,9 @@ class SiteSetting extends Model
     {
         return static::query()->firstOrCreate([], [
             'trust_items' => [
-                'Paiement à la livraison',
-                'Livraison organisée avec soin',
-                'Une question ? Contactez-nous directement',
+                'Payez à la réception, en toute confiance',
+                'Une livraison préparée avec soin, rien que pour vous',
+                'Une conseillère à votre écoute, comme une amie',
             ],
             'about_story' => "L'Univers des Amiras est né d'une conviction simple : la mode voilée mérite des pièces choisies avec la même exigence que n'importe quel univers de mode. Voiles, hijabs, parfums et accessoires sont sélectionnés un à un, pour leur qualité autant que pour l'élégance qu'ils apportent au quotidien.\n\nChaque pièce est pensée pour accompagner une femme moderne, fière de son identité, qui ne veut choisir ni entre pudeur et style, ni entre tradition et modernité.",
             'about_quote' => "L'élégance ne se choisit pas, elle se porte avec soi.",
@@ -48,6 +49,9 @@ class SiteSetting extends Model
             'social_instagram' => null,
             'social_facebook' => null,
             'social_tiktok' => null,
+            'auth_title' => "L'élégance voilée, pensée pour vous.",
+            'auth_subtitle' => 'Suivez vos commandes, gérez vos adresses et retrouvez votre univers en un instant.',
+            'auth_image_path' => null,
         ]);
     }
 }

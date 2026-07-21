@@ -30,3 +30,65 @@
         animation: none;
     }
 }
+
+/* Contour doré animé des cartes « L'expérience Amiras » : un halo lumineux qui
+   tourne autour du bord de chaque carte. Technique : un dégradé conique dont
+   l'angle est animé (@property rend l'angle interpolable — Chrome/Edge, Safari
+   16.4+, Firefox 128+), masqué pour ne teinter que le contour de 1,5 px. */
+@property --trust-angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+}
+
+.trust-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1.5px;
+    background: conic-gradient(
+        from var(--trust-angle),
+        rgba(184, 146, 63, 0) 200deg,
+        rgba(184, 146, 63, 0.85) 285deg,
+        rgba(184, 146, 63, 1) 300deg,
+        rgba(184, 146, 63, 0.85) 315deg,
+        rgba(184, 146, 63, 0) 360deg
+    );
+    -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    animation: trust-border-spin 6s linear infinite;
+    opacity: 0.6;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+}
+
+.trust-card:hover::before {
+    opacity: 1;
+    animation-duration: 3s;
+}
+
+/* Décalage des halos pour qu'ils ne tournent pas tous en même temps. */
+.trust-card:nth-child(2)::before {
+    animation-delay: -2s;
+}
+
+.trust-card:nth-child(3)::before {
+    animation-delay: -4s;
+}
+
+@keyframes trust-border-spin {
+    to {
+        --trust-angle: 360deg;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .trust-card::before {
+        animation: none;
+        opacity: 0.5;
+    }
+}

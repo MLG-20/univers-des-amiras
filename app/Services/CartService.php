@@ -49,6 +49,23 @@ class CartService
     }
 
     /**
+     * Panier existant du visiteur avec ses lignes chargées, pour l'affichage du
+     * tiroir dans le header. Comme currentItemCount(), NE crée jamais de panier
+     * (lecture seule) — naviguer ne doit rien écrire en base. Retourne null si
+     * le visiteur n'a pas encore de panier.
+     */
+    public function currentCartForDisplay(Request $request): ?Cart
+    {
+        $cart = $request->user()
+            ? Cart::where('user_id', $request->user()->id)->first()
+            : Cart::where('session_id', $request->session()->getId())->first();
+
+        $cart?->load(['items.product.images', 'items.product.category', 'items.variant']);
+
+        return $cart;
+    }
+
+    /**
      * @throws CartException
      */
     public function addItem(Cart $cart, Product $product, ?ProductVariant $variant, int $quantity): CartItem

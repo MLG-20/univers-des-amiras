@@ -17,7 +17,7 @@
                 @endif
 
                 @forelse ($addresses as $address)
-                    <div class="p-4 mb-4 bg-white border border-amiras-ink/10 rounded-md" x-data="{ editing: false }">
+                    <div class="p-5 mb-4 bg-white border {{ $address->is_default ? 'border-amiras-gold/40' : 'border-amiras-ink/10' }} rounded-2xl transition hover:shadow-md hover:border-amiras-gold/40" x-data="{ editing: false }">
                         <div x-show="!editing">
                             <div class="flex items-start justify-between gap-4">
                                 <div>
@@ -60,14 +60,17 @@
                         </form>
                     </div>
                 @empty
-                    <p class="text-sm text-amiras-taupe">Vous n'avez pas encore enregistré d'adresse.</p>
+                    <div class="rounded-2xl border border-dashed border-amiras-ink/20 p-8 text-center text-sm text-amiras-taupe">
+                        Vous n'avez pas encore enregistré d'adresse.<br>
+                        Ajoutez-en une pour accélérer vos prochaines commandes.
+                    </div>
                 @endforelse
             </div>
 
             <div>
                 <h2 class="text-lg font-medium text-amiras-ink mb-4">Ajouter une adresse</h2>
 
-                <form method="post" action="{{ route('account.addresses.store') }}" class="p-4 bg-white border border-amiras-ink/10 rounded-md space-y-4">
+                <form method="post" action="{{ route('account.addresses.store') }}" class="p-6 bg-white border border-amiras-ink/10 rounded-2xl space-y-4">
                     @csrf
                     @include('account.partials.address-fields')
 

@@ -264,3 +264,45 @@ Aucun test automatisé écrit pour cette sous-étape à la demande d'Ahmed (« a
 php artisan serve
 # /, /a-propos, /contact, /admin (Contenu du site > Hero, Réglages du site)
 ```
+
+---
+
+## Sous-étape 8 — Avis clients, images de catégories, tiroir panier (fait)
+
+Dernier lot de la Phase 2 avant la revue de fin de phase. Objectif : finir de rendre le site « rassurant » (preuve sociale, catégories illustrées) et fluidifier l'ajout au panier.
+
+### Ce qui a été construit
+- **Avis clients** — `App\Models\Content\Review` + table `reviews` (auteur, ville, note, commentaire, `is_published`, `position`). Deux entrées :
+  - **Public** : `ReviewController@store` sur `POST /avis`, validé par `StoreReviewRequest`. Les avis soumis depuis le site arrivent **non publiés** — ils n'apparaissent qu'après modération explicite en admin. C'est délibéré : un formulaire d'avis public sans modération est une porte ouverte au spam et aux contenus injurieux sur la vitrine de la cliente.
+  - **Admin** : `ReviewResource` (Filament, groupe « Contenu du site ») pour publier/dépublier et ordonner.
+  - Affichage via `x-shop.review-card`, alimenté par le scope `Review::published()`.
+- **Images de catégories** — migration `add_image_path_to_categories_table` + `CategoryObserver` qui branche les catégories sur le même `ImageVariantGenerator` que les produits et le hero (génération des variantes à l'enregistrement, nettoyage à la suppression). Les bannières de catégorie ne dépendent plus uniquement du dégradé de repli introduit en sous-étape 6.
+- **Tiroir panier (slide-over)** — `shop/partials/cart-drawer.blade.php` : panneau latéral Alpine (état `cartOpen` porté par `<body>`), rendu côté serveur à partir de `$headerCart` partagé au layout. Fermeture au clic sur le voile et à la touche Échap. Évite de quitter la page de catalogue pour vérifier son panier.
+- **Pages d'authentification personnalisables** — champs `auth_title`, `auth_subtitle`, `auth_image_path` sur `SiteSetting`, éditables depuis la page Réglages du site. La migration remplit la ligne singleton existante avec des textes par défaut (`firstOrCreate` ne réapplique pas les défauts à une ligne déjà créée) pour que login/register ne soient jamais vides.
+- **`config/livewire.php` publié** — `temporary_file_upload.rules` relevé à `max:16384` (16 Mo), suite du correctif d'upload de la sous-étape 7.
+
+### Tests
+Suite complète verte : **97 tests, 270 assertions**. Nouveaux tests :
+- `Shop/ReviewSubmissionTest` — un avis soumis est enregistré mais **non publié**, seuls les avis publiés sortent sur l'accueil, nom et commentaire obligatoires.
+- `Account/DashboardTest` — redirection des invités, tuiles d'accès rapide pour le client connecté.
+- `Admin/CategoryResourceTest` et `Admin/ProductResourceTest` étendus (upload et champs image).
+
+> La suite prend ~6 min : la génération de variantes d'images domine le temps d'exécution. À optimiser (fake du générateur dans les tests qui ne l'exercent pas) si ça devient gênant.
+
+### Comment vérifier
+```bash
+php artisan migrate --seed
+npm run build
+php artisan serve --no-reload   # cf. note uploads, sous-étape 7
+# /  (section avis)  ·  /admin (Contenu du site > Avis)  ·  clic sur l'icône panier
+```
+
+---
+
+## Fin de la Phase 2 — changement d'identité de marque
+
+La cliente a transmis le **rapport d'identité visuelle « Aissatou Store » V3** (`docs/Aissatou_Store_Rapport_Identite_Visuelle.pdf`, 17 pages, juillet 2026) après la sous-étape 8. Il remplace `docs/files/ux-ui-direction-amiras.md` comme référentiel visuel.
+
+**Portée réelle du changement :** couche présentation uniquement. Aucun impact sur le domaine métier (catalogue, panier, comptes, commandes), la sécurité ou la scalabilité. Le code ne contient aucune couleur hex en dur dans les vues Blade — tout passe par les tokens Tailwind `amiras-*`, ce qui rend la substitution de palette essentiellement mécanique.
+
+Détail du plan de reprise et des arbitrages en attente : voir `docs/progress/02b-reidentite-aissatou-store.md`.

@@ -47,7 +47,10 @@ export default function productFilters({ action, initial }) {
         },
 
         bindPaginationLinks() {
-            this.$refs.grid.querySelectorAll('a[href]').forEach((link) => {
+            // Uniquement les liens de pagination (conteneur [data-pagination]) —
+            // surtout PAS les liens des cartes produit, qui doivent naviguer
+            // normalement vers la fiche produit.
+            this.$refs.grid.querySelectorAll('[data-pagination] a[href]').forEach((link) => {
                 link.addEventListener('click', (event) => {
                     event.preventDefault();
                     this.apply(link.getAttribute('href'));

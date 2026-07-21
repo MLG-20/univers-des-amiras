@@ -1,4 +1,4 @@
-<x-shop-layout :title="config('app.name')">
+<x-shop-layout :title="config('app.name')" :transparent-header="true">
     {{--
         Hero : carrousel géré depuis l'admin (Filament > Contenu du site >
         Hero). Chaque slide a son image, son titre, son sous-titre et son
@@ -105,7 +105,7 @@
                 @foreach ($collections as $collection)
                     <a href="{{ route('shop.category', $collection->slug) }}" class="group block">
                         <div class="aspect-[4/5] w-full overflow-hidden rounded-md border border-amiras-ink/10 group-hover:border-amiras-gold transition">
-                            <x-shop.image-placeholder :category="$collection" />
+                            <x-shop.image-placeholder :category="$collection" :image="$collection->sizedUrl('medium')" />
                         </div>
 
                         <div class="mt-3 flex items-center justify-between gap-2">
@@ -153,16 +153,173 @@
     @endphp
 
     @if (! empty($settings->trust_items))
-        <section class="border-y border-amiras-ink/10 bg-amiras-ivory">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
-                @foreach ($settings->trust_items as $index => $text)
-                    <div class="flex flex-col items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-amiras-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="{{ $trustIcons[$index % count($trustIcons)] }}" />
-                        </svg>
-                        <p class="text-sm text-amiras-ink">{{ $text }}</p>
+        {{-- Révélation au scroll (IntersectionObserver via Alpine, sans plugin) :
+             `shown` bascule à true quand la section entre dans le viewport, ce
+             qui déclenche l'apparition en cascade des cartes. --}}
+        <section
+            class="relative border-y border-amiras-ink/10 bg-gradient-to-b from-amiras-ivory to-amiras-cream overflow-hidden"
+            x-data="{ shown: false }"
+            x-init="new IntersectionObserver((entries, obs) => entries.forEach(e => { if (e.isIntersecting) { shown = true; obs.disconnect(); } }), { threshold: 0.2 }).observe($el)"
+        >
+            {{-- Filet doré décoratif en haut de section. --}}
+            <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amiras-gold/60 to-transparent"></div>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+                <div
+                    class="text-center max-w-2xl mx-auto mb-14"
+                    style="opacity:0; transform:translateY(1.5rem); transition: opacity .7s ease, transform .7s ease;"
+                    :style="shown && 'opacity:1; transform:translateY(0)'"
+                >
+                    <span class="text-xs uppercase tracking-[0.3em] text-amiras-gold">L'expérience Amiras</span>
+                    <h2 class="mt-4 font-display text-3xl sm:text-4xl text-amiras-ink leading-tight">Commandez l'esprit tranquille</h2>
+                    <p class="mt-4 text-amiras-taupe">De la commande à votre porte, chaque détail est pensé pour vous simplifier la vie — et vous faire sentir choyée.</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
+                    @foreach ($settings->trust_items as $index => $text)
+                        <div
+                            class="trust-card group relative flex flex-col items-center text-center gap-5 rounded-2xl border border-amiras-ink/10 bg-white/50 backdrop-blur-sm px-6 py-12 transition duration-500 hover:-translate-y-2 hover:shadow-2xl"
+                            style="opacity:0; transform:translateY(2rem); transition: opacity .7s ease, transform .7s ease, box-shadow .5s ease, border-color .5s ease; transition-delay: {{ $index * 140 }}ms;"
+                            :style="shown && 'opacity:1; transform:translateY(0)'"
+                        >
+                            <div class="flex items-center justify-center h-16 w-16 rounded-full border border-amiras-gold/40 bg-amiras-gold/5 text-amiras-gold transition duration-500 group-hover:bg-amiras-gold group-hover:text-amiras-cream group-hover:scale-110 group-hover:shadow-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="{{ $trustIcons[$index % count($trustIcons)] }}" />
+                                </svg>
+                            </div>
+
+                            <p class="font-display text-lg sm:text-xl text-amiras-ink leading-snug">{{ $text }}</p>
+
+                            <span class="block h-px w-10 bg-amiras-gold/50 transition-all duration-500 group-hover:w-20"></span>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+    @endif
+
+    {{-- FORMULAIRE d'avis — placé AVANT le carrousel. Avis créé NON publié, puis
+    modéré en admin. Révélation au scroll + notation par étoiles interactive
+    (Alpine) + compteur de caractères + bouton animé. L'état hidden n'est appliqué
+    QUE par Alpine (:style), donc le formulaire reste utilisable sans JS. --}}
+    <section
+        id="avis"
+        class="relative overflow-hidden border-y border-amiras-ink/10 bg-gradient-to-b from-amiras-cream to-amiras-ivory"
+        x-data="{ shown: false, rating: {{ (int) old('rating', 0) }}, hover: 0 }"
+        x-init="new IntersectionObserver((entries, obs) => entries.forEach(e => { if (e.isIntersecting) { shown = true; obs.disconnect(); } }), { threshold: 0.15 }).observe($el)"
+    >
+        <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amiras-gold/60 to-transparent"></div>
+
+        <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
+            <div
+                class="text-center"
+                style="transition: opacity .7s ease, transform .7s ease;"
+                :style="shown ? 'opacity:1; transform:translateY(0)' : 'opacity:0; transform:translateY(1.5rem)'"
+            >
+                <span class="text-xs uppercase tracking-[0.3em] text-amiras-gold">Votre avis compte</span>
+                <h2 class="mt-3 font-display text-3xl sm:text-4xl text-amiras-ink leading-tight">Partagez votre expérience</h2>
+                <p class="mt-3 text-amiras-taupe">Quelques mots suffisent. Votre avis sera publié après vérification par notre équipe.</p>
+            </div>
+
+            @if (session('status') === 'review-submitted')
+                <p class="mt-8 flex items-center gap-2 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
+                    <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Merci ! Votre avis a bien été envoyé. Il apparaîtra sur le site après vérification.
+                </p>
+            @endif
+
+            <form
+                method="post"
+                action="{{ route('shop.reviews.store') }}"
+                class="mt-10 space-y-6 rounded-3xl border border-amiras-ink/10 bg-white/70 backdrop-blur-sm p-6 sm:p-10 shadow-sm"
+                style="transition: opacity .8s ease .15s, transform .8s ease .15s;"
+                :style="shown ? 'opacity:1; transform:translateY(0)' : 'opacity:0; transform:translateY(2rem)'"
+            >
+                @csrf
+
+                {{-- Notation par étoiles interactive (survol + clic). --}}
+                <div>
+                    <x-input-label value="Votre note" />
+                    <input type="hidden" name="rating" :value="rating || ''">
+                    <div class="mt-2 flex items-center gap-1.5" @mouseleave="hover = 0">
+                        <template x-for="star in 5" :key="star">
+                            <button
+                                type="button"
+                                @click="rating = (rating === star ? 0 : star)"
+                                @mouseenter="hover = star"
+                                class="transition-transform duration-150 hover:scale-125 focus:outline-none"
+                            >
+                                <svg class="h-9 w-9 transition-colors duration-200"
+                                     :class="(hover || rating) >= star ? 'text-amiras-gold' : 'text-amiras-ink/15'"
+                                     viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M11.48 3.5a.56.56 0 011.04 0l2.12 5.11a.56.56 0 00.48.35l5.52.44c.5.04.7.66.32.99l-4.2 3.6a.56.56 0 00-.19.56l1.29 5.38a.56.56 0 01-.84.61l-4.73-2.88a.56.56 0 00-.58 0l-4.73 2.88a.56.56 0 01-.84-.61l1.29-5.38a.56.56 0 00-.19-.56l-4.2-3.6a.56.56 0 01.32-.99l5.52-.44a.56.56 0 00.48-.35L11.48 3.5z" />
+                                </svg>
+                            </button>
+                        </template>
+                        <span class="ml-2 text-sm text-amiras-taupe" x-text="rating ? rating + '/5' : 'Optionnel'"></span>
                     </div>
-                @endforeach
+                    <x-input-error class="mt-2" :messages="$errors->get('rating')" />
+                </div>
+
+                <div class="grid gap-5 sm:grid-cols-2">
+                    <div>
+                        <x-input-label for="author_name" value="Votre nom" />
+                        <x-text-input id="author_name" name="author_name" type="text" class="mt-1 block w-full" :value="old('author_name')" required />
+                        <x-input-error class="mt-2" :messages="$errors->get('author_name')" />
+                    </div>
+
+                    <div>
+                        <x-input-label for="location" value="Ville (optionnel)" />
+                        <x-text-input id="location" name="location" type="text" class="mt-1 block w-full" :value="old('location')" />
+                        <x-input-error class="mt-2" :messages="$errors->get('location')" />
+                    </div>
+                </div>
+
+                <div x-data="{ count: {{ mb_strlen(old('comment', '')) }} }">
+                    <x-input-label for="comment" value="Votre avis" />
+                    <textarea
+                        id="comment" name="comment" rows="4" required maxlength="600"
+                        @input="count = $event.target.value.length"
+                        class="mt-1 block w-full rounded-xl border-amiras-ink/20 text-sm transition focus:border-amiras-gold focus:ring-amiras-gold"
+                    >{{ old('comment') }}</textarea>
+                    <div class="mt-1 flex items-center justify-between">
+                        <x-input-error :messages="$errors->get('comment')" />
+                        <span class="ml-auto text-xs text-amiras-taupe"><span x-text="count">0</span>/600</span>
+                    </div>
+                </div>
+
+                <button
+                    type="submit"
+                    class="group inline-flex items-center gap-2 rounded-full bg-amiras-ink px-8 py-3 text-sm font-medium uppercase tracking-wide text-amiras-cream transition-all duration-300 hover:bg-amiras-gold hover:text-amiras-ink hover:shadow-lg"
+                >
+                    <span>Envoyer mon avis</span>
+                    <svg class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                    </svg>
+                </button>
+            </form>
+        </div>
+    </section>
+
+    {{-- Carrousel des avis PUBLIÉS (marquee, même gabarit que « À découvrir »),
+    placé APRÈS le formulaire. --}}
+    @if ($reviews->isNotEmpty())
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <span class="text-xs uppercase tracking-[0.2em] text-amiras-gold">Avis clients</span>
+            <h2 class="font-display text-3xl text-amiras-ink mt-1 mb-8">Elles nous font confiance</h2>
+
+            <div class="overflow-hidden">
+                <div class="flex gap-6 w-max marquee-track">
+                    @foreach ([1, 2] as $repeat)
+                        @foreach ($reviews as $review)
+                            <div class="w-72 sm:w-80 flex-shrink-0">
+                                <x-shop.review-card :review="$review" />
+                            </div>
+                        @endforeach
+                    @endforeach
+                </div>
             </div>
         </section>
     @endif

@@ -40,7 +40,10 @@ class CartController extends Controller
             return back()->withErrors(['variant_id' => $exception->getMessage()]);
         }
 
-        return redirect()->route('shop.cart')->with('status', 'Produit ajouté au panier.');
+        // On reste sur la page courante et on ouvre le tiroir panier (flash lu
+        // par le layout), au lieu d'envoyer sur la page /panier — parcours plus
+        // fluide et « premium ».
+        return back()->with('cart_opened', true);
     }
 
     public function update(Request $request, CartItem $item): RedirectResponse
@@ -64,7 +67,9 @@ class CartController extends Controller
 
         $this->cartService->removeItem($item);
 
-        return redirect()->route('shop.cart');
+        // Retour à la page courante avec réouverture du tiroir (retrait depuis
+        // le tiroir ou la page panier), pour garder le contexte.
+        return back()->with('cart_opened', true);
     }
 
     /**

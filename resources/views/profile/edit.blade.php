@@ -5,15 +5,16 @@
         @include('account.partials.nav')
 
         <div class="space-y-6 max-w-xl">
-            <div class="p-4 sm:p-8 bg-white border border-amiras-ink/10 rounded-md">
+            <div class="p-6 sm:p-8 bg-white border border-amiras-ink/10 rounded-2xl">
                 @include('profile.partials.update-profile-information-form')
             </div>
 
-            <div class="p-4 sm:p-8 bg-white border border-amiras-ink/10 rounded-md">
+            <div class="p-6 sm:p-8 bg-white border border-amiras-ink/10 rounded-2xl">
                 @include('profile.partials.update-password-form')
             </div>
 
-            <div class="p-4 sm:p-8 bg-white border border-amiras-ink/10 rounded-md">
+            {{-- Zone sensible : léger fond rouge pour signaler la suppression. --}}
+            <div class="p-6 sm:p-8 bg-red-50/40 border border-red-200/60 rounded-2xl">
                 @include('profile.partials.delete-user-form')
             </div>
         </div>

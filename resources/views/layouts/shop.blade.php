@@ -12,23 +12,41 @@
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased bg-amiras-cream text-amiras-ink" x-data="{ mobileNavOpen: false }">
-        <header class="border-b border-amiras-ink/10 sticky top-0 bg-amiras-cream/95 backdrop-blur z-30">
+    <body
+        class="font-sans antialiased bg-amiras-cream text-amiras-ink"
+        x-data="{ mobileNavOpen: false, cartOpen: {{ session('cart_opened') ? 'true' : 'false' }} }"
+        :class="(cartOpen || mobileNavOpen) && 'overflow-hidden'"
+    >
+        <header
+            x-data="{ scrolled: false }"
+            x-init="scrolled = window.pageYOffset > 20"
+            @scroll.window="scrolled = window.pageYOffset > 20"
+            @if ($transparentHeader)
+                {{-- Accueil : transparent sur le hero sombre (texte crème), puis
+                     fond crème opaque dès qu'on scrolle OU que le menu mobile s'ouvre. --}}
+                :class="(scrolled || mobileNavOpen)
+                    ? 'bg-amiras-cream/95 backdrop-blur border-amiras-ink/10 text-amiras-ink shadow-sm'
+                    : 'bg-transparent border-transparent text-amiras-cream'"
+                class="fixed top-0 inset-x-0 z-30 border-b transition-colors duration-300"
+            @else
+                class="sticky top-0 z-30 border-b border-amiras-ink/10 bg-amiras-cream/95 backdrop-blur text-amiras-ink"
+            @endif
+        >
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex items-center justify-between h-16">
-                    <a href="{{ route('home') }}" class="font-display text-xl tracking-wide">
+                    <a href="{{ route('home') }}" class="font-display text-lg sm:text-xl tracking-wide whitespace-nowrap">
                         L'Univers des Amiras
                     </a>
 
                     <nav class="hidden md:flex items-center gap-8 text-sm uppercase tracking-wide">
-                        <a href="{{ route('home') }}" class="text-amiras-ink/80 hover:text-amiras-ink border-b border-transparent hover:border-amiras-gold pb-1 transition">
+                        <a href="{{ route('home') }}" class="text-current opacity-80 hover:opacity-100 border-b border-transparent hover:border-amiras-gold pb-1 transition">
                             Accueil
                         </a>
 
                         <div class="relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
                             <a
                                 href="{{ route('shop.index') }}"
-                                class="flex items-center gap-1 text-amiras-ink/80 hover:text-amiras-ink border-b border-transparent hover:border-amiras-gold pb-1 transition"
+                                class="flex items-center gap-1 text-current opacity-80 hover:opacity-100 border-b border-transparent hover:border-amiras-gold pb-1 transition"
                             >
                                 Catalogue
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -68,29 +86,29 @@
                             </div>
                         </div>
 
-                        <a href="{{ route('shop.about') }}" class="text-amiras-ink/80 hover:text-amiras-ink border-b border-transparent hover:border-amiras-gold pb-1 transition">
+                        <a href="{{ route('shop.about') }}" class="text-current opacity-80 hover:opacity-100 border-b border-transparent hover:border-amiras-gold pb-1 transition">
                             À propos
                         </a>
-                        <a href="{{ route('shop.contact') }}" class="text-amiras-ink/80 hover:text-amiras-ink border-b border-transparent hover:border-amiras-gold pb-1 transition">
+                        <a href="{{ route('shop.contact') }}" class="text-current opacity-80 hover:opacity-100 border-b border-transparent hover:border-amiras-gold pb-1 transition">
                             Contact
                         </a>
                     </nav>
 
-                    <div class="flex items-center gap-5 text-sm">
+                    <div class="flex items-center gap-3 sm:gap-5 text-sm">
                         @auth
-                            <a href="{{ route('profile.edit') }}" class="text-amiras-ink/80 hover:text-amiras-ink">Mon compte</a>
+                            <a href="{{ route('dashboard') }}" class="hidden md:inline-block text-current opacity-80 hover:opacity-100">Mon compte</a>
                         @else
-                            <a href="{{ route('login') }}" class="text-amiras-ink/80 hover:text-amiras-ink">Connexion</a>
+                            <a href="{{ route('login') }}" class="hidden md:inline-block text-current opacity-80 hover:opacity-100">Connexion</a>
                         @endauth
 
-                        <a href="{{ route('shop.cart') }}" class="text-amiras-ink/80 hover:text-amiras-ink flex items-center gap-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 1.994-4.694 2.598-7.172.106-.43-.27-.828-.712-.828H5.106M7.5 14.25L5.106 5.272M7.5 14.25L5.25 18.75m9-14.25L21.75 5.25" />
+                        <button type="button" @click="cartOpen = true" class="relative text-current opacity-80 hover:opacity-100" aria-label="Ouvrir le panier">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z" />
                             </svg>
                             @if ($cartItemCount > 0)
-                                <span>{{ $cartItemCount }}</span>
+                                <span class="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-amiras-gold text-[10px] font-medium text-amiras-cream">{{ $cartItemCount }}</span>
                             @endif
-                        </a>
+                        </button>
 
                         <button
                             type="button"
@@ -108,27 +126,64 @@
                 <nav
                     class="md:hidden pb-4 flex flex-col gap-3 text-sm uppercase tracking-wide"
                     x-show="mobileNavOpen"
+                    x-transition.opacity.duration.200ms
                     x-cloak
                 >
-                    <a href="{{ route('home') }}" class="text-amiras-ink/80 hover:text-amiras-ink">Accueil</a>
-                    <a href="{{ route('shop.index') }}" class="text-amiras-ink/80 hover:text-amiras-ink">Catalogue</a>
+                    <a href="{{ route('home') }}" class="text-current opacity-80 hover:opacity-100">Accueil</a>
+                    {{-- Catalogue repliable : sous-catégories cachées par défaut ;
+                         l'utilisateur déplie/replie via le chevron. --}}
+                    <div x-data="{ catOpen: false }">
+                        <button
+                            type="button"
+                            @click="catOpen = !catOpen"
+                            class="flex w-full items-center justify-between text-current opacity-80 hover:opacity-100"
+                            :aria-expanded="catOpen"
+                        >
+                            <span>Catalogue</span>
+                            <svg class="h-4 w-4 transition-transform duration-200" :class="catOpen && 'rotate-180'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                            </svg>
+                        </button>
 
-                    @foreach ($navCategories as $navCategory)
-                        <a href="{{ route('shop.category', $navCategory['slug']) }}" class="pl-4 normal-case text-amiras-ink/70 hover:text-amiras-ink">
-                            {{ $navCategory['name'] }}
-                        </a>
-                        @foreach ($navCategory['children'] as $child)
-                            <a href="{{ route('shop.category', $child['slug']) }}" class="pl-8 normal-case text-amiras-ink/60 hover:text-amiras-ink">
-                                {{ $child['name'] }}
-                            </a>
-                        @endforeach
-                    @endforeach
+                        <div x-show="catOpen" x-cloak x-transition.opacity.duration.200ms class="mt-3 flex flex-col gap-3">
+                            <a href="{{ route('shop.index') }}" class="pl-4 normal-case text-amiras-ink/70 hover:text-amiras-ink">Tout le catalogue</a>
 
-                    <a href="{{ route('shop.about') }}" class="text-amiras-ink/80 hover:text-amiras-ink">À propos</a>
-                    <a href="{{ route('shop.contact') }}" class="text-amiras-ink/80 hover:text-amiras-ink">Contact</a>
+                            @foreach ($navCategories as $navCategory)
+                                <a href="{{ route('shop.category', $navCategory['slug']) }}" class="pl-4 normal-case text-amiras-ink/70 hover:text-amiras-ink">
+                                    {{ $navCategory['name'] }}
+                                </a>
+                                @foreach ($navCategory['children'] as $child)
+                                    <a href="{{ route('shop.category', $child['slug']) }}" class="pl-8 normal-case text-amiras-ink/60 hover:text-amiras-ink">
+                                        {{ $child['name'] }}
+                                    </a>
+                                @endforeach
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <a href="{{ route('shop.about') }}" class="text-current opacity-80 hover:opacity-100">À propos</a>
+                    <a href="{{ route('shop.contact') }}" class="text-current opacity-80 hover:opacity-100">Contact</a>
+
+                    {{-- Compte + panier : présents dans le menu mobile puisque masqués
+                         dans la barre du haut sur petit écran. --}}
+                    <div class="mt-2 flex flex-col gap-3 border-t border-amiras-ink/10 pt-3">
+                        @auth
+                            <a href="{{ route('dashboard') }}" class="text-current opacity-80 hover:opacity-100">Mon compte</a>
+                        @else
+                            <a href="{{ route('login') }}" class="text-current opacity-80 hover:opacity-100">Connexion</a>
+                        @endauth
+                        <button type="button" @click="mobileNavOpen = false; cartOpen = true" class="text-left text-current opacity-80 hover:opacity-100">
+                            Panier
+                            @if ($cartItemCount > 0)
+                                ({{ $cartItemCount }})
+                            @endif
+                        </button>
+                    </div>
                 </nav>
             </div>
         </header>
+
+        @include('shop.partials.cart-drawer')
 
         <main>
             {{ $slot }}

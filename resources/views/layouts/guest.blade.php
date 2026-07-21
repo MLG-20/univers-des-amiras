@@ -13,13 +13,29 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased">
+        @php
+            $authSettings = \App\Models\Content\SiteSetting::current();
+            $authImage = $authSettings->auth_image_path
+                ? \Illuminate\Support\Facades\Storage::disk('public')->url($authSettings->auth_image_path)
+                : null;
+        @endphp
+
         <div class="min-h-screen flex">
-            {{-- Panneau de marque : même traitement "bandeau signature" (ébène
-            + or) que le hero de l'accueil, pour une première impression
-            premium cohérente sur tout le parcours d'authentification. --}}
-            <div class="hidden lg:flex lg:w-1/2 relative flex-col justify-between p-12 bg-amiras-ink text-amiras-cream overflow-hidden">
-                <div class="absolute inset-0 opacity-25 bg-[radial-gradient(circle_at_20%_20%,rgba(184,146,63,0.6),transparent_60%)]"></div>
-                <div class="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_85%_85%,rgba(184,146,63,0.5),transparent_55%)]"></div>
+            {{-- Panneau de marque (login/register), éditable depuis l'admin
+            (Filament > Réglages du site > Pages de connexion & inscription) :
+            image de fond si réglée, sinon le "bandeau signature" ébène + or de
+            la charte, comme le hero. Titre et sous-texte éditables aussi. --}}
+            <div
+                class="hidden lg:flex lg:w-1/2 relative flex-col justify-between p-12 text-amiras-cream overflow-hidden bg-amiras-ink bg-cover bg-center"
+                @if ($authImage) style="background-image: url('{{ $authImage }}');" @endif
+            >
+                @if ($authImage)
+                    {{-- Voile sombre pour garder le texte crème lisible sur la photo. --}}
+                    <div class="absolute inset-0 bg-amiras-ink/55"></div>
+                @else
+                    <div class="absolute inset-0 opacity-25 bg-[radial-gradient(circle_at_20%_20%,rgba(184,146,63,0.6),transparent_60%)]"></div>
+                    <div class="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_85%_85%,rgba(184,146,63,0.5),transparent_55%)]"></div>
+                @endif
 
                 <a href="{{ route('home') }}" class="relative font-display text-2xl tracking-wide">
                     L'Univers des Amiras
@@ -27,10 +43,10 @@
 
                 <div class="relative">
                     <p class="font-display text-3xl xl:text-4xl leading-snug max-w-md">
-                        L'élégance voilée, pensée pour vous.
+                        {{ $authSettings->auth_title }}
                     </p>
                     <p class="mt-4 text-amiras-cream/70 max-w-sm">
-                        Suivez vos commandes, gérez vos adresses et retrouvez votre univers en un instant.
+                        {{ $authSettings->auth_subtitle }}
                     </p>
                 </div>
 

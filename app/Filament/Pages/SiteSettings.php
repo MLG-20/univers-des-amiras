@@ -3,6 +3,8 @@
 namespace App\Filament\Pages;
 
 use App\Models\Content\SiteSetting;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Textarea;
@@ -12,6 +14,8 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\HtmlString;
 
 class SiteSettings extends Page implements HasForms
 {
@@ -40,6 +44,11 @@ class SiteSettings extends Page implements HasForms
             ->map(fn (string $text) => ['text' => $text])
             ->all();
 
+        // Le champ d'upload de l'image d'auth démarre vide (l'image actuelle est
+        // montrée en aperçu) : le remplir = remplacer, le laisser vide = conserver
+        // (voir save()). Même logique que le hero.
+        $settings['auth_image_path'] = null;
+
         $this->form->fill($settings);
     }
 
@@ -56,6 +65,52 @@ class SiteSettings extends Page implements HasForms
                             ->maxItems(3)
                             ->minItems(1)
                             ->reorderable(false),
+                    ]),
+
+                Section::make('Pages de connexion & inscription')
+                    ->description('Le panneau visuel à gauche des pages « Connexion » et « Créer un compte ».')
+                    ->schema([
+                        Placeholder::make('auth_image_preview')
+                            ->label('Image actuelle du panneau')
+                            ->content(function (): HtmlString {
+                                $path = SiteSetting::current()->auth_image_path;
+
+                                if (! $path) {
+                                    return new HtmlString(
+                                        '<span style="color:#6b7280;">Aucune image — le panneau affiche le fond ébène + or de la charte.</span>'
+                                    );
+                                }
+
+                                $url = Storage::disk('public')->url($path);
+
+                                return new HtmlString(
+                                    '<img src="'.e($url).'" alt="Image du panneau d\'auth" '
+                                    .'style="max-width:100%;max-height:220px;border-radius:0.75rem;'
+                                    .'box-shadow:0 1px 3px rgba(0,0,0,.15);object-fit:cover;">'
+                                );
+                            }),
+
+                        FileUpload::make('auth_image_path')
+                            ->label("Changer l'image du panneau")
+                            ->image()
+                            ->imageEditor()
+                            ->disk('public')
+                            ->directory('auth')
+                            ->visibility('public')
+                            ->maxSize(15360)
+                            ->helperText(new HtmlString(
+                                'Laissez vide pour conserver l\'image ci-dessus (ou le fond de la charte si aucune). '
+                                .'<strong>Format portrait recommandé : 1200 × 1600 px</strong>. 15 Mo maximum.'
+                            )),
+
+                        TextInput::make('auth_title')
+                            ->label('Titre')
+                            ->maxLength(255),
+
+                        Textarea::make('auth_subtitle')
+                            ->label('Sous-texte')
+                            ->rows(2)
+                            ->maxLength(500),
                     ]),
 
                 Section::make('Page À propos')
@@ -110,6 +165,12 @@ class SiteSettings extends Page implements HasForms
             ->filter()
             ->values()
             ->all();
+
+        // Image d'auth laissée vide => on conserve l'existante (on ne l'écrase
+        // pas avec null). Une nouvelle image déposée remplace.
+        if (blank($state['auth_image_path'] ?? null)) {
+            unset($state['auth_image_path']);
+        }
 
         SiteSetting::current()->update($state);
 

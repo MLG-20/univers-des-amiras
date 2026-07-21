@@ -6,6 +6,7 @@ use App\Models\Catalogue\Category;
 use App\Models\Catalogue\ProductImage;
 use App\Models\Content\HeroSlide;
 use App\Models\Content\SiteSetting;
+use App\Observers\CategoryObserver;
 use App\Observers\HeroSlideObserver;
 use App\Observers\ProductImageObserver;
 use App\Services\CartService;
@@ -30,13 +31,17 @@ class AppServiceProvider extends ServiceProvider
     {
         ProductImage::observe(ProductImageObserver::class);
         HeroSlide::observe(HeroSlideObserver::class);
+        Category::observe(CategoryObserver::class);
 
         // Toutes les pages boutique partagent la même nav de catégories racines ;
         // ce composer évite de passer $navCategories manuellement depuis chaque
         // contrôleur Shop\*.
         View::composer('layouts.shop', function ($view): void {
+            $cart = app(CartService::class)->currentCartForDisplay(request());
+
             $view->with('navCategories', $this->navCategories());
-            $view->with('cartItemCount', app(CartService::class)->currentItemCount(request()));
+            $view->with('headerCart', $cart);
+            $view->with('cartItemCount', $cart ? $cart->items->sum('quantity') : 0);
             $view->with('footerSettings', SiteSetting::current());
         });
     }

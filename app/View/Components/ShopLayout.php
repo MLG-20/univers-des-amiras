@@ -9,6 +9,9 @@ class ShopLayout extends Component
 {
     public function __construct(
         public ?string $title = null,
+        // Header transparent posé sur le hero (accueil), qui devient opaque au
+        // scroll. Les pages sans hero sombre gardent le header opaque classique.
+        public bool $transparentHeader = false,
     ) {}
 
     public function render(): View

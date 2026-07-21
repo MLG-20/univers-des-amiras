@@ -1,5 +1,6 @@
 @php
     $accountLinks = [
+        'dashboard' => 'Tableau de bord',
         'profile.edit' => 'Informations personnelles',
         'account.addresses.index' => 'Adresses',
         'account.orders.index' => 'Commandes',

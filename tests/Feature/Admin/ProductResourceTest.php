@@ -3,6 +3,7 @@
 namespace Tests\Feature\Admin;
 
 use App\Filament\Resources\Catalogue\ProductResource\Pages\CreateProduct;
+use App\Filament\Resources\Catalogue\ProductResource\Pages\EditProduct;
 use App\Models\Admin;
 use App\Models\Catalogue\Category;
 use App\Models\Catalogue\Product;
@@ -70,6 +71,63 @@ class ProductResourceTest extends TestCase
             ->assertHasFormErrors();
 
         $this->assertDatabaseMissing('products', ['slug' => 'produit-malveillant']);
+    }
+
+    public function test_editing_a_product_without_touching_its_image_keeps_it(): void
+    {
+        // Point critique du Repeater d'images : sur la page Edit, le champ de
+        // chaque image démarre vide (aperçu au-dessus). Enregistrer sans y
+        // toucher NE DOIT PAS effacer ni recréer l'image — comme le hero.
+        Storage::fake('public');
+        $this->actingAs(Admin::factory()->create(), 'admin');
+
+        $product = Product::factory()->create(['name' => 'Voile brodé']);
+        $image = $product->images()->create([
+            'path' => 'products/existante.webp',
+            'is_primary' => true,
+            'position' => 0,
+        ]);
+
+        Livewire::test(EditProduct::class, ['record' => $product->getRouteKey()])
+            ->fillForm(['name' => 'Voile brodé modifié'])
+            ->call('save')
+            ->assertHasNoFormErrors();
+
+        $product->refresh();
+        $this->assertSame('Voile brodé modifié', $product->name);
+        $this->assertCount(1, $product->images);
+        // Même enregistrement (pas supprimé/recréé) et chemin conservé :
+        $this->assertSame($image->id, $product->images->first()->id);
+        $this->assertSame('products/existante.webp', $product->images->first()->path);
+    }
+
+    public function test_uploading_a_new_file_replaces_an_existing_product_image(): void
+    {
+        Storage::fake('public');
+        $this->actingAs(Admin::factory()->create(), 'admin');
+
+        $product = Product::factory()->create();
+        $product->images()->create([
+            'path' => 'products/ancienne.webp',
+            'is_primary' => true,
+            'position' => 0,
+        ]);
+
+        Livewire::test(EditProduct::class, ['record' => $product->getRouteKey()])
+            ->fillForm([
+                'images' => [
+                    ['path' => [UploadedFile::fake()->image('nouvelle.jpg', 1400, 1400)], 'is_primary' => true, 'position' => 0],
+                ],
+            ])
+            ->call('save')
+            ->assertHasNoFormErrors();
+
+        $product->refresh();
+        $this->assertCount(1, $product->images);
+        $newPath = $product->images->first()->path;
+        $this->assertNotSame('products/ancienne.webp', $newPath);
+        $this->assertStringStartsWith('products/', (string) $newPath);
+        Storage::disk('public')->assertExists($newPath);
     }
 
     public function test_deactivating_a_product_removes_it_from_the_active_catalogue_without_deleting_it(): void

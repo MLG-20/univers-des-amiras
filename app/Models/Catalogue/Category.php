@@ -2,6 +2,7 @@
 
 namespace App\Models\Catalogue;
 
+use App\Services\ImageVariantGenerator;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -9,9 +10,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
-#[Fillable(['name', 'slug', 'description', 'parent_id', 'position', 'is_active'])]
+#[Fillable(['name', 'slug', 'description', 'image_path', 'parent_id', 'position', 'is_active'])]
 class Category extends Model
 {
     use HasFactory;
@@ -56,5 +58,23 @@ class Category extends Model
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('is_active', true);
+    }
+
+    /**
+     * URL d'une variante redimensionnée de l'image de catégorie, ou null si
+     * aucune image n'est définie (le composant d'affichage retombe alors sur
+     * le visuel « signature » par défaut). Retombe sur l'original si la
+     * variante demandée n'a pas encore été générée.
+     */
+    public function sizedUrl(string $size): ?string
+    {
+        if (! $this->image_path) {
+            return null;
+        }
+
+        $disk = Storage::disk('public');
+        $sizedPath = app(ImageVariantGenerator::class)->sizedPath($this->image_path, $size);
+
+        return $disk->exists($sizedPath) ? $disk->url($sizedPath) : $disk->url($this->image_path);
     }
 }
