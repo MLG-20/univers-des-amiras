@@ -5,7 +5,7 @@
 
 <x-shop-layout :title="$product->name.' — '.config('app.name')">
     <div
-        class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
+        class="max-w-shell mx-auto px-4 sm:px-6 lg:px-10 xl:px-12 py-8"
         x-data="{
             activeImage: 0,
             touchStartX: 0,

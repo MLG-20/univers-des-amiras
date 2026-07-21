@@ -17,7 +17,7 @@
             <div class="absolute inset-0 bg-brand-ink/55"></div>
         @endif
 
-        <div class="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="relative w-full max-w-shell mx-auto px-4 sm:px-6 lg:px-10 xl:px-12">
             <h1 class="font-display text-4xl sm:text-5xl {{ $categoryImage ? 'text-brand-surface' : 'text-brand-ink' }}">{{ $category->name }}</h1>
 
             @if ($category->description)
@@ -26,7 +26,7 @@
         </div>
     </section>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="max-w-shell mx-auto px-4 sm:px-6 lg:px-10 xl:px-12 py-8">
         @if ($category->children->isNotEmpty())
             <div class="flex flex-wrap gap-2 mb-8">
                 @foreach ($category->children as $child)

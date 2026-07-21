@@ -83,3 +83,34 @@
         transition: none;
     }
 }
+
+/* Symbole de la marque. Le fichier fourni est un PNG dont le fond était opaque ;
+   il a été détouré et réduit à sa silhouette (cf. public/brand/). On l'applique
+   ici en MASQUE plutôt qu'en <img> : la couleur vient de `currentColor`, donc le
+   signe est en Parchemin sur l'en-tête posé sur le hero sombre, et en Encre une
+   fois l'en-tête devenu opaque — sans dupliquer deux fichiers.
+
+   Le rapport autorise explicitement un logo monochrome (p.16, principe 01) ;
+   l'accent Garance du signe est perdu au passage, il reviendra avec le SVG
+   officiel réclamé à la cliente.
+
+   L'URL du masque n'est PAS écrite ici mais injectée par le Blade via la
+   variable --brand-symbol. Une `url()` posée dans cette feuille se résoudrait
+   depuis l'origine du serveur Vite en développement, où /brand/ n'existe pas :
+   le masque tombait en 404 et le signe disparaissait, alors que tout
+   fonctionnait après un build. `asset()` donne toujours l'origine de l'app.
+
+   Ratio du fichier source : 776 × 805. */
+.brand-symbol {
+    display: block;
+    aspect-ratio: 776 / 805;
+    background-color: currentColor;
+    -webkit-mask-image: var(--brand-symbol);
+            mask-image: var(--brand-symbol);
+    -webkit-mask-size: contain;
+            mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+            mask-position: center;
+}

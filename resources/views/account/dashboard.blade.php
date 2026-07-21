@@ -45,14 +45,14 @@
         <div class="absolute inset-0 opacity-25 bg-[radial-gradient(circle_at_15%_20%,rgba(74,24,51,0.55),transparent_60%)]"></div>
         <div class="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_85%_90%,rgba(74,24,51,0.5),transparent_55%)]"></div>
 
-        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-16">
+        <div class="relative max-w-shell mx-auto px-4 sm:px-6 lg:px-10 xl:px-12 py-14 sm:py-16">
             <span class="text-xs uppercase tracking-[0.3em] text-brand-sage">Votre espace</span>
             <h1 class="mt-3 font-display text-4xl sm:text-5xl">Bonjour {{ $firstName }}</h1>
             <p class="mt-3 max-w-xl text-brand-surface/70">Bienvenue dans votre univers. Vos commandes, vos adresses et vos informations, réunis en un seul endroit.</p>
         </div>
     </section>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="max-w-shell mx-auto px-4 sm:px-6 lg:px-10 xl:px-12 py-10">
         @include('account.partials.nav')
 
         {{-- Tuiles d'accès rapide. --}}

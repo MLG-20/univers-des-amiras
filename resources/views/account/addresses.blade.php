@@ -1,5 +1,5 @@
 <x-shop-layout :title="'Mes adresses — '.config('app.name')">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="max-w-shell mx-auto px-4 sm:px-6 lg:px-10 xl:px-12 py-8">
         <h1 class="font-display text-3xl mb-6">Mon compte</h1>
 
         @include('account.partials.nav')

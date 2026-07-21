@@ -6,7 +6,7 @@
         <h1 class="relative font-display text-4xl sm:text-5xl text-brand-surface">Notre histoire</h1>
     </section>
 
-    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-10">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-10 xl:px-12 py-16 space-y-10">
         @if ($settings->about_story)
             <div>
                 <span class="text-xs uppercase tracking-[0.2em] text-brand-sage">Depuis Dakar</span>

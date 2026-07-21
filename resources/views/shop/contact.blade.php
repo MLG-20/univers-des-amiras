@@ -1,13 +1,13 @@
 <x-shop-layout :title="'Contact — '.config('app.name')">
     <section class="w-full bg-gradient-to-br from-brand-parchment via-brand-surface to-brand-muted/20 border-b border-brand-ink/10 py-14 sm:py-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-shell mx-auto px-4 sm:px-6 lg:px-10 xl:px-12">
             <span class="text-xs uppercase tracking-[0.2em] text-brand-signature">Une question ?</span>
             <h1 class="font-display text-4xl sm:text-5xl text-brand-ink mt-1">Contactez-nous</h1>
             <p class="mt-3 text-brand-muted max-w-xl">Une question sur un produit, une commande, une livraison ? Écrivez-nous, nous répondons rapidement.</p>
         </div>
     </section>
 
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 grid md:grid-cols-2 gap-12">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-10 xl:px-12 py-16 grid md:grid-cols-2 gap-12">
         <div>
             <h2 class="font-display text-xl text-brand-ink mb-6">Écrivez-nous</h2>
 

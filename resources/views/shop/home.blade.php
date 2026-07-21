@@ -24,10 +24,9 @@
     >
         @if ($slides->isEmpty())
             <div class="absolute inset-0 bg-brand-ink">
-                <div class="absolute inset-0 opacity-25 bg-[radial-gradient(circle_at_15%_15%,rgba(74,24,51,0.6),transparent_60%)]"></div>
-                <div class="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_85%_85%,rgba(74,24,51,0.5),transparent_55%)]"></div>
+                <x-shop.fold-backdrop />
 
-                <div class="relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-center items-start gap-6 py-24">
+                <div class="relative h-full max-w-shell mx-auto px-4 sm:px-6 lg:px-10 xl:px-12 flex flex-col justify-center items-start gap-6 py-24">
                     <span class="text-[0.65rem] uppercase tracking-[0.4em] text-brand-surface/60">Aissatou Store</span>
                     <h1 class="font-display text-4xl sm:text-6xl lg:text-7xl leading-[1.05] max-w-3xl">{{ $defaultSlide['title'] }}</h1>
                     <p class="text-brand-surface/70 max-w-lg text-base sm:text-lg">{{ $defaultSlide['subtitle'] }}</p>
@@ -56,11 +55,10 @@
                 >
                     <div class="absolute inset-0 {{ $slide->image_path ? 'bg-brand-ink/50' : '' }}"></div>
                     @unless ($slide->image_path)
-                        <div class="absolute inset-0 opacity-25 bg-[radial-gradient(circle_at_15%_15%,rgba(74,24,51,0.6),transparent_60%)]"></div>
-                        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_85%_85%,rgba(74,24,51,0.5),transparent_55%)]"></div>
+                        <x-shop.fold-backdrop />
                     @endunless
 
-                    <div class="relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-center items-start gap-6 py-24">
+                    <div class="relative h-full max-w-shell mx-auto px-4 sm:px-6 lg:px-10 xl:px-12 flex flex-col justify-center items-start gap-6 py-24">
                         <span class="text-[0.65rem] uppercase tracking-[0.4em] text-brand-surface/60">Aissatou Store</span>
                         <h1 class="font-display text-4xl sm:text-6xl lg:text-7xl leading-[1.05] max-w-3xl">{{ $slide->title }}</h1>
 
@@ -99,20 +97,44 @@
         @endif
     </section>
 
-    {{-- Collections — bannières pleine largeur, une par catégorie racine --}}
+    {{-- ARCHITECTURE DE L'OFFRE (rapport d'identité p.3) — une tuile par
+         catégorie racine.
+
+         Cette section s'intitulait « Collections », ce qui entrait en collision
+         frontale avec l'onglet « Collections » de la navigation : dans le
+         rapport, Collections est un univers À PART (« le récit éditorial »,
+         p.3), pas le nom du sommaire des catégories. Deux entrées portant le
+         même mot vers deux destinations différentes, c'est l'inverse du
+         « contenu choisi plutôt qu'accumulé » exigé p.16.
+
+         La p.3 fait aussi suivre chaque univers d'un descripteur court — « Le
+         geste quotidien », « La matière et le mouvement »… — repris ici depuis
+         la description de la catégorie, qui est éditable en admin. --}}
     @if ($collections->isNotEmpty())
-        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-            <span class="text-xs uppercase tracking-[0.2em] text-brand-signature">Nos univers</span>
-            <h2 class="font-display text-3xl text-brand-ink mt-1 mb-8">Collections</h2>
+        <section class="max-w-shell mx-auto px-4 sm:px-6 lg:px-10 xl:px-12 py-16">
+            <span class="text-xs uppercase tracking-[0.2em] text-brand-signature">Architecture de l'offre</span>
+            <h2 class="font-display text-3xl text-brand-ink mt-1 mb-8">Nos univers</h2>
 
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-6">
                 @foreach ($collections as $collection)
+                    @php
+                        // On ne garde que la PREMIÈRE PROPOSITION de la description —
+                        // « Le geste quotidien », « La matière et le mouvement » —
+                        // c'est exactement la forme des descripteurs de la p.3. La
+                        // coupe se fait au premier deux-points ou à la première
+                        // virgule, les deux tournures présentes en base ; une
+                        // description libre saisie en admin est simplement tronquée.
+                        $descriptor = $collection->description
+                            ? Str::limit(rtrim(trim(Str::before(Str::before($collection->description, ' :'), ',')), '.'), 60)
+                            : null;
+                    @endphp
+
                     <a href="{{ route('shop.category', $collection->slug) }}" class="group block">
                         <div class="aspect-[4/5] w-full overflow-hidden rounded-sm border border-brand-ink/10 group-hover:border-brand-signature transition">
                             <x-shop.image-placeholder :category="$collection" :image="$collection->sizedUrl('medium')" />
                         </div>
 
-                        <div class="mt-3 flex items-center justify-between gap-2">
+                        <div class="mt-3 flex items-baseline justify-between gap-2">
                             <span class="font-display text-lg sm:text-xl text-brand-ink group-hover:text-brand-signature transition">
                                 {{ $collection->name }}
                             </span>
@@ -120,6 +142,10 @@
                                 Voir →
                             </span>
                         </div>
+
+                        @if ($descriptor)
+                            <p class="mt-1 text-sm text-brand-muted">{{ $descriptor }}</p>
+                        @endif
                     </a>
                 @endforeach
             </div>
@@ -128,7 +154,7 @@
 
     {{-- Nouveautés — défilement horizontal --}}
     @if ($newProducts->isNotEmpty())
-        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <section class="max-w-shell mx-auto px-4 sm:px-6 lg:px-10 xl:px-12 py-16">
             <span class="text-xs uppercase tracking-[0.2em] text-brand-signature">À découvrir</span>
             <h2 class="font-display text-3xl text-brand-ink mt-1 mb-8">Nouveautés</h2>
 
@@ -168,7 +194,7 @@
             {{-- Filet doré décoratif en haut de section. --}}
             <div class="absolute inset-x-0 top-0 h-px bg-brand-signature/15"></div>
 
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+            <div class="max-w-shell mx-auto px-4 sm:px-6 lg:px-10 xl:px-12 py-16 sm:py-24">
                 <div
                     class="text-center max-w-2xl mx-auto mb-14"
                     style="opacity:0; transform:translateY(1.5rem); transition: opacity .7s ease, transform .7s ease;"
@@ -214,7 +240,7 @@
     >
         <div class="absolute inset-x-0 top-0 h-px bg-brand-signature/15"></div>
 
-        <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
+        <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-10 xl:px-12 py-16 sm:py-20">
             <div
                 class="text-center"
                 style="transition: opacity .7s ease, transform .7s ease;"
@@ -310,7 +336,7 @@
     {{-- Carrousel des avis PUBLIÉS (marquee, même gabarit que « À découvrir »),
     placé APRÈS le formulaire. --}}
     @if ($reviews->isNotEmpty())
-        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <section class="max-w-shell mx-auto px-4 sm:px-6 lg:px-10 xl:px-12 py-16">
             <span class="text-xs uppercase tracking-[0.2em] text-brand-signature">Avis clients</span>
             <h2 class="font-display text-3xl text-brand-ink mt-1 mb-8">Elles nous font confiance</h2>
 

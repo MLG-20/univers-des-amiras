@@ -12,6 +12,24 @@ Route::get('catalogue', [ProductController::class, 'index'])->name('shop.index')
 Route::get('categories/{category:slug}', [CategoryController::class, 'show'])->name('shop.category');
 Route::get('produits/{product:slug}', [ProductController::class, 'show'])->name('shop.product');
 
+// Sections présentes dans la maquette dont le module arrive en Phase 2.2. Elles
+// ont une page d'attente plutôt qu'un lien mort ; route et vue disparaissent
+// quand le module correspondant est livré.
+Route::get('collections', fn () => view('shop.coming-soon', [
+    'heading' => 'Collections',
+    'intro' => 'Le récit éditorial de la maison : Atelier Nocturne, Essentiels, Saison et L\'art d\'offrir.',
+]))->name('shop.collections');
+
+Route::get('journal', fn () => view('shop.coming-soon', [
+    'heading' => 'Journal',
+    'intro' => 'Nos histoires de matières, de gestes et de sélections.',
+]))->name('shop.journal');
+
+Route::get('liste-envies', fn () => view('shop.coming-soon', [
+    'heading' => "Liste d'envies",
+    'intro' => 'Retrouvez ici les pièces que vous mettez de côté.',
+]))->name('shop.wishlist');
+
 Route::get('a-propos', fn () => view('shop.about', ['settings' => SiteSetting::current()]))->name('shop.about');
 Route::get('contact', [ContactController::class, 'show'])->name('shop.contact');
 Route::post('contact', [ContactController::class, 'store'])->name('shop.contact.store');
