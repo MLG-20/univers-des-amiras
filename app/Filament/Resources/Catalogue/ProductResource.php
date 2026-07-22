@@ -51,7 +51,10 @@ class ProductResource extends Resource
                     ->required()
                     ->maxLength(255)
                     ->live(onBlur: true)
-                    ->afterStateUpdated(fn (string $state, callable $set) => $set('slug', Str::slug($state))),
+                    // $state est nullable : quitter le champ encore vide (à la
+                    // création) le déclenche avec null, ce qui plantait sur un
+                    // paramètre typé `string`.
+                    ->afterStateUpdated(fn (?string $state, callable $set) => $set('slug', Str::slug($state ?? ''))),
 
                 TextInput::make('slug')
                     ->label('Adresse de la page (lien)')
@@ -69,9 +72,19 @@ class ProductResource extends Resource
 
                 TextInput::make('sku')
                     ->label('Référence article')
-                    ->helperText('Code interne unique pour retrouver ce produit (ex. VOI-001). Facultatif.')
-                    ->maxLength(255)
-                    ->unique(ignoreRecord: true),
+                    // Générée par le modèle à l'enregistrement (Product::generateSku).
+                    // `disabled` empêche la saisie, `dehydrated(false)` empêche
+                    // que le champ écrase la valeur générée : l'admin la voit mais
+                    // ne peut ni la vider ni créer un doublon.
+                    ->helperText('Attribuée automatiquement à partir de la catégorie (ex. HIJ-001). Non modifiable.')
+                    ->placeholder('Attribuée à l’enregistrement')
+                    ->disabled()
+                    ->dehydrated(false),
+
+                TextInput::make('material')
+                    ->label('Matière / bénéfice')
+                    ->helperText("Une phrase très courte, entre le nom et le prix : la matière, puis ce qu'elle apporte. Par exemple « Modal souple — tombé fluide » ou « Soie lavée — reflet mat ». C'est ce qui donne envie de toucher la pièce ; évitez la fiche technique.")
+                    ->maxLength(120),
 
                 TextInput::make('price')
                     ->label('Prix (FCFA)')
@@ -190,9 +203,12 @@ class ProductResource extends Resource
                     ->schema([
                         TextInput::make('sku')
                             ->label('Référence de la déclinaison')
-                            ->helperText('Code unique de cette variante (ex. VOI-001-M).')
-                            ->required()
-                            ->maxLength(255),
+                            // Générée par le modèle (ProductVariant::generateSku),
+                            // même principe que la référence article ci-dessus.
+                            ->helperText('Attribuée automatiquement à partir de la référence article (ex. HIJ-001-01). Non modifiable.')
+                            ->placeholder('Attribuée à l’enregistrement')
+                            ->disabled()
+                            ->dehydrated(false),
                         KeyValue::make('attributes')
                             ->label('Caractéristiques')
                             ->keyLabel('Type (ex. Taille)')

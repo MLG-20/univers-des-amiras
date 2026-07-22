@@ -34,9 +34,42 @@
         @endunless
     </div>
 
+    {{-- HIÉRARCHIE PRODUIT de la p.3, dans son ordre exact : catégorie, nom,
+         matière/bénéfice, prix — puis les variantes, que la p.12 ajoute à la
+         lecture produit (« visuel, catégorie, nom, prix et variante »). --}}
     <div class="mt-4 flex flex-col gap-1">
         <span class="text-[0.6rem] uppercase tracking-[0.18em] text-brand-muted">{{ $product->category->name }}</span>
         <h3 class="font-display text-lg leading-snug text-brand-ink">{{ $product->name }}</h3>
+
+        @if ($product->material)
+            <p class="text-xs leading-snug text-brand-muted">{{ $product->material }}</p>
+        @endif
+
         <p class="text-sm text-brand-ink">{{ number_format($product->price, 0, ',', ' ') }} FCFA</p>
+
+        @php
+            // Une pastille par couleur DISTINCTE et reconnue. Deux variantes de
+            // même couleur (deux tailles d'un même coloris) ne doivent pas
+            // produire deux pastilles identiques.
+            $swatches = $product->variants
+                ->map(fn ($variant) => $variant->swatch())
+                ->filter()
+                ->unique()
+                ->take(5);
+        @endphp
+
+        @if ($swatches->isNotEmpty())
+            <div class="mt-1.5 flex items-center gap-1.5">
+                @foreach ($swatches as $swatch)
+                    {{-- Le liseré évite qu'une pastille claire (Ivoire, Blanc)
+                         disparaisse sur le fond Parchemin. --}}
+                    <span
+                        class="h-3 w-3 rounded-full border border-brand-ink/15"
+                        style="background-color: {{ $swatch }}"
+                        aria-hidden="true"
+                    ></span>
+                @endforeach
+            </div>
+        @endif
     </div>
 </a>

@@ -58,7 +58,7 @@
                 @foreach ($headerCart->items as $item)
                     @php
                         $variantLabel = collect($item->variant?->attributes ?? [])
-                            ->map(fn ($value, $key) => ucfirst($key).': '.$value)
+                            ->map(fn ($value, $key) => ucfirst($key).' : '.$value)
                             ->implode(', ');
                     @endphp
                     <div class="flex gap-4 py-4">

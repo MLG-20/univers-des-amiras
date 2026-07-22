@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
-#[Fillable(['category_id', 'name', 'slug', 'sku', 'description', 'price', 'label', 'is_active'])]
+#[Fillable(['category_id', 'name', 'slug', 'sku', 'description', 'material', 'price', 'label', 'is_active'])]
 class Product extends Model
 {
     use HasFactory, SoftDeletes;
@@ -33,6 +33,37 @@ class Product extends Model
                 $product->slug = Str::slug($product->name);
             }
         });
+
+        // Référence article attribuée automatiquement à la création, jamais
+        // saisie à la main : l'admin ne peut donc ni la laisser vide, ni créer
+        // un doublon. Générée ici plutôt que dans le formulaire pour couvrir
+        // aussi les seeders et les imports. Une valeur déjà présente (import,
+        // reprise de données) est respectée.
+        static::creating(function (Product $product): void {
+            if (blank($product->sku)) {
+                $product->sku = static::generateSku($product);
+            }
+        });
+    }
+
+    /**
+     * Prochaine référence article libre pour la catégorie du produit :
+     * PREFIXE-001, PREFIXE-002…
+     */
+    private static function generateSku(Product $product): string
+    {
+        $prefix = Category::find($product->category_id)?->skuPrefix() ?? 'ART';
+
+        // Les produits soft-supprimés gardent leur référence (la ligne reste en
+        // base) : on repart donc du plus grand numéro déjà utilisé, jamais d'un
+        // simple comptage, pour ne jamais réattribuer une référence libérée.
+        $lastNumber = static::withTrashed()
+            ->where('sku', 'like', $prefix.'-%')
+            ->pluck('sku')
+            ->map(fn (string $sku): int => (int) Str::afterLast($sku, '-'))
+            ->max();
+
+        return sprintf('%s-%03d', $prefix, ($lastNumber ?? 0) + 1);
     }
 
     public function category(): BelongsTo

@@ -112,8 +112,60 @@ class CatalogueTest extends TestCase
         $response = $this->get("/produits/{$product->slug}");
 
         $response->assertOk();
-        $response->assertSee('Taille: M');
+        $response->assertSee('Taille : M');
         $response->assertDontSee($inactiveVariant->sku);
+    }
+
+    public function test_the_product_page_shows_the_five_levels_of_the_product_hierarchy(): void
+    {
+        // Les cinq niveaux de la p.3 du rapport d'identité : catégorie, nom,
+        // matière/bénéfice, prix, signal. Trois manquaient sur la fiche.
+        $category = Category::factory()->create(['name' => 'Hijabs', 'is_active' => true]);
+        $product = Product::factory()->for($category)->create([
+            'name' => 'Hijab Modal Cassis',
+            'material' => 'Modal souple — tombé fluide',
+            'price' => 42000,
+            'label' => ProductLabel::Selected,
+            'is_active' => true,
+        ]);
+
+        $response = $this->get("/produits/{$product->slug}");
+
+        $response->assertOk();
+        $response->assertSee('Hijabs');
+        $response->assertSee($product->name);
+        $response->assertSee($product->material);
+        $response->assertSee('42 000 FCFA');
+        $response->assertSee('Sélectionné');
+    }
+
+    public function test_the_product_card_shows_the_material(): void
+    {
+        $product = Product::factory()->create([
+            'material' => 'Soie lavée — reflet mat',
+            'is_active' => true,
+            'label' => ProductLabel::New,
+        ]);
+
+        $this->get('/catalogue')->assertOk()->assertSee($product->material);
+        // La carte sert aussi la section Nouveautés de l'accueil.
+        $this->get('/')->assertOk()->assertSee($product->material);
+    }
+
+    public function test_a_variant_colour_resolves_to_a_swatch(): void
+    {
+        $product = Product::factory()->create(['is_active' => true]);
+        $known = ProductVariant::factory()->for($product)->create(['attributes' => ['couleur' => 'Bordeaux']]);
+        $hex = ProductVariant::factory()->for($product)->create(['attributes' => ['Coloris' => '#123ABC']]);
+        $unknown = ProductVariant::factory()->for($product)->create(['attributes' => ['couleur' => 'Vermillon crépusculaire']]);
+        $sizeOnly = ProductVariant::factory()->for($product)->create(['attributes' => ['taille' => 'M']]);
+
+        $this->assertSame('#6B1F2E', $known->swatch());
+        // Échappatoire : un code hexadécimal saisi en admin est repris tel quel.
+        $this->assertSame('#123ABC', $hex->swatch());
+        // Couleur inconnue : aucune pastille, plutôt qu'une pastille fausse.
+        $this->assertNull($unknown->swatch());
+        $this->assertNull($sizeOnly->swatch());
     }
 
     public function test_the_category_page_only_lists_products_from_that_category(): void

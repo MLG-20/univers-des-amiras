@@ -61,6 +61,23 @@ class Category extends Model
     }
 
     /**
+     * Préfixe de trois lettres pour les références article générées
+     * automatiquement (cf. Product::generateSku) : « Hijabs » → HIJ,
+     * « Sacs à main » → SAC.
+     *
+     * Sans accent (le SKU doit rester saisissable au clavier partout) et
+     * complété par des X si le nom compte moins de trois lettres, pour que le
+     * préfixe fasse toujours exactement trois caractères.
+     */
+    public function skuPrefix(): string
+    {
+        $ascii = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $this->name) ?: $this->name;
+        $letters = strtoupper(preg_replace('/[^A-Za-z]/', '', $ascii));
+
+        return str_pad(substr($letters, 0, 3), 3, 'X');
+    }
+
+    /**
      * URL d'une variante redimensionnée de l'image de catégorie, ou null si
      * aucune image n'est définie (le composant d'affichage retombe alors sur
      * le visuel « signature » par défaut). Retombe sur l'original si la

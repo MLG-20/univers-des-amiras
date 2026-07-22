@@ -1,5 +1,13 @@
 @props([
-    'href',
+    // Sans `href`, le composant rend un <button> : la même règle de style doit
+    // s'appliquer qu'on navigue ou qu'on soumette un formulaire. C'est ce qui
+    // manquait pour que « Ajouter au panier » puisse être le CTA Garance de la
+    // fiche produit sans recopier les classes à la main.
+    'href' => null,
+    'type' => 'submit',
+    // Prop explicite plutôt que la directive `@disabled` : celle-ci ne
+    // s'applique qu'aux balises HTML, pas aux balises de composant.
+    'disabled' => false,
     'variant' => 'secondary',
     'onDark' => false,
 ])
@@ -20,13 +28,17 @@
             ? 'border border-brand-surface/40 text-brand-surface hover:border-brand-surface'
             : 'border border-brand-ink/30 text-brand-ink hover:border-brand-ink',
     };
+
+    $base = 'inline-block rounded-sm px-8 py-3.5 text-xs font-medium uppercase tracking-[0.15em] transition duration-300 '
+        .'disabled:opacity-40 disabled:pointer-events-none '.$classes;
 @endphp
 
-<a
-    href="{{ $href }}"
-    {{ $attributes->merge([
-        'class' => 'inline-block rounded-sm px-8 py-3.5 text-xs font-medium uppercase tracking-[0.15em] transition duration-300 '.$classes,
-    ]) }}
->
-    {{ $slot }}
-</a>
+@if ($href)
+    <a href="{{ $href }}" {{ $attributes->merge(['class' => $base]) }}>
+        {{ $slot }}
+    </a>
+@else
+    <button type="{{ $type }}" @disabled($disabled) {{ $attributes->merge(['class' => $base]) }}>
+        {{ $slot }}
+    </button>
+@endif
